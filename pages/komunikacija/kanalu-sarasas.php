@@ -16,8 +16,6 @@ array_push($GLOBALS['_styleRenderers'], function() {
 $_title = "Kanalų sąrašas";
 $_render = function() {
   $currentUser = $GLOBALS['_userController']->getCurrentUser();
-  $userType = $currentUser->type;
-
   $channels = $GLOBALS['_channelController']->getChannels();
 
   ?>
