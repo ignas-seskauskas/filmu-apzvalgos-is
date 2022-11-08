@@ -1,3 +1,3 @@
 <?php
 require('includes/user.php');
-require('includes/channel.php');
+require('includes/komunikacija/channel.php');

@@ -2,21 +2,21 @@
 if(isset($_GET['page'])) {
   switch ($_GET['page']) {
     case '':
-      require('pages/index.php');
+      require('pages/pagrindinis.php');
     break;
     case 'kanalu-sarasas':
-      require('pages/kanalu-sarasas.php');
+      require('pages/komunikacija/kanalu-sarasas.php');
     break;
     case 'sukurti-kanala':
-      require('pages/sukurti-kanala.php');
+      require('pages/komunikacija/sukurti-kanala.php');
     break;
     case 'kanalas':
-      require('pages/kanalas.php');
+      require('pages/komunikacija/kanalas.php');
     break;
     default:
       require('pages/404.php');
     break;
   }
 } else {
-  require('pages/index.php');
+  require('pages/pagrindinis.php');
 }
