@@ -1,3 +1,9 @@
+<?php
+$_styleRenderers = [];
+
+function renderStyles() {
+  ?>
+
 <style>
   body {
     display: flex;
@@ -61,3 +67,6 @@
     }
   ?>
 </style>
+
+<?php
+  }

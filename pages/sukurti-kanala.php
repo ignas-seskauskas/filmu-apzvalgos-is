@@ -1,6 +1,6 @@
 <?php
-$title = "Kanalo sukūrimas";
-$render = function() {
+$_title = "Kanalo sukūrimas";
+$_render = function() {
   ?>
     <form>
       <div class="form-group">

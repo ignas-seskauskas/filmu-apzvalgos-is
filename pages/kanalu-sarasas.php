@@ -13,8 +13,8 @@ array_push($GLOBALS['_styleRenderers'], function() {
   <?php
 });
 
-$title = "Kanalų sąrašas";
-$render = function() {
+$_title = "Kanalų sąrašas";
+$_render = function() {
   $currentUser = $GLOBALS['_userController']->getCurrentUser();
   $userType = $currentUser->type;
 
@@ -43,21 +43,23 @@ $render = function() {
             echo '<td><a href="'. $GLOBALS['_pagePrefix'] .'/kanalas&id=' . $channel->id . '">' . $channel->name . '</a></td>';
             echo '<td>' . $channel->currentUsers . '/' . $channel->maxUsers . '</td>';
 
-            if($userType == UserType::Moderator || $currentUser->id == $channel->userId) {
+            echo '<td>';
+            if($currentUser->permissions->editAllChannels || $currentUser->id == $channel->userId) {
               ?>
-              <td>
                 <button type="button" class="btn btn-primary">
                   <i class="bi bi-pencil-fill"></i>
                 </button>
+              <?php
+            }
+            if($currentUser->permissions->removeAllChannels || $currentUser->id == $channel->userId) {
+              ?>
                 <button type="button" class="btn btn-danger">
                   <i class="bi bi-trash"></i>
                 </button>
-              </td>
               <?php
-            } else {
-              echo '<td></td>';
             }
-
+            echo '</td>';
+            
             echo '</tr>';
           }
         ?>

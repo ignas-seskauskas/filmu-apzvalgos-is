@@ -144,13 +144,13 @@ array_push($GLOBALS['_styleRenderers'], function() {
 
 $GLOBALS['_style_full-width'] = true;
 $channel = $GLOBALS['_channelController']->getChannelById($_GET['id']);
-$title = "Kanalas - " . $channel->name;
+$_title = "Kanalas - " . $channel->name;
 
 if(!isset($channel) || !isset($_GET['id'])) {
   header("Location: " . $GLOBALS['_pagePrefix'] . "/404");
 }
 
-$render = function() {
+$_render = function() {
   global $channel;
   $users = $channel->getUsers();
   $messages = $channel->getMessages();
