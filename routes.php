@@ -37,6 +37,9 @@ if(isset($_GET['page'])) {
     case 'profilis':
       require('pages/vartotojo/profilis.php');
     break;
+    case 'admin':
+      require('pages/vartotojo/admin.php');
+    break;
     default:
       require('pages/404.php');
     break;
