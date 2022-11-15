@@ -1,16 +1,6 @@
 <?php
 array_push($GLOBALS['_styleRenderers'], function() {
   ?>
-    .filmas__wrapper {
-      position: absolute;
-      height: 100%;
-      width: 100%;
-      display: flex;
-      flex-direction: row;
-      align-items: stretch;
-      justify-content: flex-start;
-    }
-
     .filmas__sidebar {
       min-width: 16rem;
       background-color: <?php echo $GLOBALS['_color_darker'] ?>;
@@ -22,7 +12,6 @@ array_push($GLOBALS['_styleRenderers'], function() {
   <?php
 });
 
-$GLOBALS['_style_full-width'] = true;
 $movie = $GLOBALS['_movieController']->getMovieById($_GET['id']);
 $_title = "Filmas - " . $movie->movieName;
 
@@ -32,9 +21,23 @@ if(!isset($movie) || !isset($_GET['id'])) {
 
 $_render = function() {
   global $movie;
-  #$movies = $movie->getMovies();
-  #$messages = $channel->getMessages();
-  #$currentUser = $GLOBALS['_userController']->getCurrentUser();
-}
+
   ?>
-   
+    <div class="filmas__sidebar">
+	  Filmo pavadinimas: <strong><?php echo $movie->movieName; ?></strong>
+	  Metai: <strong><?php echo $movie->movieYear; ?></strong>
+	  Režisierius: <strong><?php echo $movie->movieDirector; ?></strong>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	</div>
+<?php 
+};
