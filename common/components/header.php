@@ -17,7 +17,7 @@ function renderHeader() {
           <a class="nav-link" aria-current="page" href="<?php echo $GLOBALS['_pagePrefix']; ?>/kanalu-sarasas">Kanalų sąrašas</a>
 		  </li>
 		  <li class="nav-item">
-		  <a class="nav-link" aria-current="page" href="<?php echo $GLOBALS['_pagePrefix']; ?>/filmu-sarasas">Filmų sąrašas</a>
+		  <a class="nav-link" aria-current="page" href="<?php echo $GLOBALS['_pagePrefix']; ?>/">Filmų sąrašas</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" aria-current="page" href="<?php echo $GLOBALS['_pagePrefix']; ?>/prisijungti">Prisijungti</a>

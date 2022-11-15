@@ -2,7 +2,7 @@
 if(isset($_GET['page'])) {
   switch ($_GET['page']) {
     case '':
-      require('pages/pagrindinis.php');
+      require('pages/filmai/filmu-sarasas.php');
     break;
     case 'kanalu-sarasas':
       require('pages/komunikacija/kanalu-sarasas.php');
@@ -13,9 +13,6 @@ if(isset($_GET['page'])) {
     case 'kanalas':
       require('pages/komunikacija/kanalas.php');
     break;
-	  case 'filmu-sarasas':
-      require('pages/filmai/filmu-sarasas.php');
-    break;
 	  case 'filmu-pridejimas':
       require('pages/filmai/filmu-pridejimas.php');
     break;
@@ -24,6 +21,7 @@ if(isset($_GET['page'])) {
     break;
     case 'pakeisti-kanala':
       require('pages/komunikacija/pakeisti-kanala.php');
+    break;
     case 'prisijungti':
       require('pages/prisijungimas/prisijungti.php');
     break;
@@ -44,5 +42,5 @@ if(isset($_GET['page'])) {
     break;
   }
 } else {
-  require('pages/pagrindinis.php');
+  require('pages/filmai/filmu-sarasas.php');
 }
