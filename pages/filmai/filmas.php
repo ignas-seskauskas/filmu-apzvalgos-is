@@ -30,7 +30,7 @@ $_render = function () {
     Režisierius: <strong><?php echo $movie->movieDirector; ?></strong>
     <br>
     <br>
-    <table>
+    <table class="table table-dark table-striped">
       <tr>
         <th style='text-align: center' colspan='4'>Komentarai</th>
       </tr>
