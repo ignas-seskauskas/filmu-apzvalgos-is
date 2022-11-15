@@ -139,6 +139,10 @@ array_push($GLOBALS['_styleRenderers'], function() {
     .kanalas__message-wrapper--yours {
       flex-direction: row-reverse;
     }
+
+    .kanalas__filter {
+      margin-bottom: 0.25rem;
+    }
   <?php
 });
 
@@ -208,6 +212,7 @@ $_render = function() {
         ?>
         </div>
         <div class="kanalas__sidebar-bottom">
+          <input class="form-control kanalas__filter" type="text" placeholder="Filtruoti vartotojus"></input>
           Prisijungę vartotojai: <strong><?php echo $channel->currentUsers . '/' . $channel->maxUsers; ?></strong>
         </div>
       </div>
