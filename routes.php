@@ -24,6 +24,20 @@ if(isset($_GET['page'])) {
     break;
     case 'pakeisti-kanala':
       require('pages/komunikacija/pakeisti-kanala.php');
+    case 'prisijungti':
+      require('pages/prisijungimas/prisijungti.php');
+    break;
+    case 'registruotis':
+      require('pages/prisijungimas/registruotis.php');
+    break;
+    case 'atsijungti':
+      require('pages/prisijungimas/atsijungti.php');
+    break;
+    case 'perziuretu-filmu-sarasas':
+      require('pages/vartotojo/perziuretu-filmu-sarasas.php');
+    break;
+    case 'profilis':
+      require('pages/vartotojo/profilis.php');
     break;
     default:
       require('pages/404.php');
