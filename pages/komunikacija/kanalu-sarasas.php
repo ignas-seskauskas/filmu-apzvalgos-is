@@ -44,7 +44,9 @@ $_render = function() {
             echo '<td>';
             if($currentUser->permissions->editAllChannels || $currentUser->id == $channel->userId) {
               ?>
-                <button type="button" class="btn btn-primary">
+                <button type="button" class="btn btn-primary" 
+                  onclick="location.href='<?php echo $GLOBALS['_pagePrefix'] . '/pakeisti-kanala&id=' . $channel->id; ?>'"
+                >
                   <i class="bi bi-pencil-fill"></i>
                 </button>
               <?php

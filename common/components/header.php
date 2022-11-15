@@ -19,6 +19,21 @@ function renderHeader() {
 		  <li class="nav-item">
 		  <a class="nav-link" aria-current="page" href="<?php echo $GLOBALS['_pagePrefix']; ?>/filmu-sarasas">Filmų sąrašas</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="<?php echo $GLOBALS['_pagePrefix']; ?>/prisijungti">Prisijungti</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="<?php echo $GLOBALS['_pagePrefix']; ?>/registruotis">Registruotis</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="<?php echo $GLOBALS['_pagePrefix']; ?>/perziuretu-filmu-sarasas">Peržiūrėtų filmų sąrašas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="<?php echo $GLOBALS['_pagePrefix']; ?>/profilis">Profilis</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="<?php echo $GLOBALS['_pagePrefix']; ?>/atsijungti">Atsijungti</a>
+        </li>
       </ul>
     </nav>
   <?php

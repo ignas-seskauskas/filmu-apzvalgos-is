@@ -17,7 +17,7 @@ $_render = function() {
       </div>
       <br/>
       <center>
-        <button type="submit" class="btn btn-success">
+        <button type="button" onclick="location.href='<?php echo $GLOBALS['_pagePrefix']; ?>/kanalu-sarasas'" class="btn btn-success">
           Kurti kanalą
         </button>
       </center>
