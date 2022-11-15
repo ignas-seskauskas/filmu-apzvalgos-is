@@ -1,2 +1,2 @@
 <?php
-$_pagePrefix = '/filmu-apzvalgos-is-master';
+$_pagePrefix = '';
