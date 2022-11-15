@@ -1,2 +1,2 @@
 <?php
-$_pagePrefix = '/imdb-copy';
+$_pagePrefix = '/filmu-apzvalgos-is-master';

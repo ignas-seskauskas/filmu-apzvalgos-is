@@ -13,6 +13,15 @@ if(isset($_GET['page'])) {
     case 'kanalas':
       require('pages/komunikacija/kanalas.php');
     break;
+	case 'filmu-sarasas':
+      require('pages/filmai/filmu-sarasas.php');
+    break;
+	case 'filmu-pridejimas':
+      require('pages/filmai/filmu-pridejimas.php');
+    break;
+	case 'filmas':
+      require('pages/filmai/filmas.php');
+    break;
     default:
       require('pages/404.php');
     break;
