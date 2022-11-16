@@ -2,7 +2,7 @@
 $_title = "Registracija";
 $_render = function() {
   ?>
-    <form action="index.php">
+    <form action="prisijungti">
       <div class="form-group">
         <label for="exampleFormControlInput1">Vardas</label>
         <input type="text" class="form-control" id="exampleFormControlInput1">
