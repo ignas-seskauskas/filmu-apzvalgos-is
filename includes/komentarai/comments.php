@@ -1,12 +1,14 @@
 <?php
 class Comment{
+    public $id;
     public $text;
     public $date;
     public $rating;
     public $header;
 
-    public static function Comment($text, $date, $rating, $header){
+    public static function Comment($text, $date, $rating, $header, $id){
         $instance = new self();
+        $instance->id = $id;
         $instance->text = $text;
         $instance->date = $date;
         $instance->rating = $rating;
@@ -17,7 +19,7 @@ class Comment{
 
 class CommentController{
     function getComments(){
-        return array(Comment::Comment("Random comment text.", date("Y-m-d H:i:s"), 7, "Comment header."));
+        return array(Comment::Comment("Random comment text.", date("Y-m-d H:i:s"), 7, "Comment header.", 0));
     }
     function getCommentsByMovieID($id){
         return;

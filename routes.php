@@ -1,48 +1,51 @@
 <?php
-if(isset($_GET['page'])) {
+if (isset($_GET['page'])) {
   switch ($_GET['page']) {
     case '':
       require('pages/filmai/filmu-sarasas.php');
-    break;
+      break;
     case 'kanalu-sarasas':
       require('pages/komunikacija/kanalu-sarasas.php');
-    break;
+      break;
     case 'sukurti-kanala':
       require('pages/komunikacija/sukurti-kanala.php');
-    break;
+      break;
     case 'kanalas':
       require('pages/komunikacija/kanalas.php');
-    break;
-	  case 'filmu-pridejimas':
+      break;
+    case 'filmu-pridejimas':
       require('pages/filmai/filmu-pridejimas.php');
-    break;
-	  case 'filmas':
+      break;
+    case 'filmas':
       require('pages/filmai/filmas.php');
-    break;
+      break;
     case 'pakeisti-kanala':
       require('pages/komunikacija/pakeisti-kanala.php');
-    break;
+      break;
     case 'prisijungti':
       require('pages/prisijungimas/prisijungti.php');
-    break;
+      break;
     case 'registruotis':
       require('pages/prisijungimas/registruotis.php');
-    break;
+      break;
     case 'atsijungti':
       require('pages/prisijungimas/atsijungti.php');
-    break;
+      break;
     case 'perziuretu-filmu-sarasas':
       require('pages/vartotojo/perziuretu-filmu-sarasas.php');
-    break;
+      break;
     case 'profilis':
       require('pages/vartotojo/profilis.php');
-    break;
-    case 'admin':
-      require('pages/admin/admin.php');
-    break;
+      break;
+    case 'komentaru-pridejimas':
+      require('pages/komentarai/komentaru-pridejimas.php');
+      break;
+    case 'komentaru-redagavimas':
+      require('pages/komentarai/komentaru-redagavimas.php');
+      break;
     default:
       require('pages/404.php');
-    break;
+      break;
   }
 } else {
   require('pages/filmai/filmu-sarasas.php');

@@ -1,6 +1,6 @@
 <?php
-$title = "Filmų pridėjimas";
-$render = function() {
+$_title = "Filmų pridėjimas";
+$_render = function() {
 	?>
 		<form>
 			<div class="form-group">
@@ -9,7 +9,7 @@ $render = function() {
 			</div>
 			<div class="form-group">
 				<label for="exampleFormControlInput1">Metai</label>
-				<input type="text" class="form-control" id="filmu_pridejimas__metai"?
+				<input type="text" class="form-control" id="filmu_pridejimas__metai">
 			</div>
 			<div class="form-group">
 				<label for="exampleFormControlInput1">Režisierius</label>
@@ -17,7 +17,7 @@ $render = function() {
 			</div>
 			<div class="form-group">
 				<label for="exampleFormControlInput1">Trukmė</label>
-				<input type="text" class="form-control" id="filmu_pridejimas__trukme"?
+				<input type="text" class="form-control" id="filmu_pridejimas__trukme">
 			</div>
 			<div class="form-group">
 				<label for="exampleFormControlTextarea1">Siužetas</label>
