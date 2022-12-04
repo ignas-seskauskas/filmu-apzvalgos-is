@@ -39,10 +39,10 @@ $_render = function() {
           foreach ($channels as &$channel) {
             echo '<tr>';
             echo '<td><a href="'. $GLOBALS['_pagePrefix'] .'/kanalas&id=' . $channel->id . '">' . $channel->name . '</a></td>';
-            echo '<td>' . $channel->currentUsers . '/' . $channel->maxUsers . '</td>';
+            echo '<td>' . $channel->current_users . '/' . $channel->max_users . '</td>';
 
             echo '<td>';
-            if($currentUser->permissions->editAllChannels || $currentUser->id == $channel->userId) {
+            if($currentUser->permissions->editAllChannels || $currentUser->id == $channel->creator) {
               ?>
                 <button type="button" class="btn btn-primary" 
                   onclick="location.href='<?php echo $GLOBALS['_pagePrefix'] . '/pakeisti-kanala&id=' . $channel->id; ?>'"
@@ -51,7 +51,7 @@ $_render = function() {
                 </button>
               <?php
             }
-            if($currentUser->permissions->removeAllChannels || $currentUser->id == $channel->userId) {
+            if($currentUser->permissions->removeAllChannels || $currentUser->id == $channel->creator) {
               ?>
                 <button type="button" class="btn btn-danger">
                   <i class="bi bi-trash"></i>

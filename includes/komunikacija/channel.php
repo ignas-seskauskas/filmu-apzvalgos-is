@@ -38,21 +38,21 @@ class ChannelMessage {
 class Channel {
   public $name;
   public $description;
-  public $maxUsers;
-  public $creationTime;
-  public $lastActiveTime;
-  public $currentUsers;
-  public $userId;
+  public $max_users;
+  public $create_time;
+  public $last_active_time;
+  public $current_users;
+  public $creator;
   public $id;
 
   private static $last_id = 0;
 
-  public static function withoutTimesAndDescription($name, $maxUsers, $currentUsers, $userId) {
+  public static function withoutTimesAndDescription($name, $max_users, $current_users, $creator) {
     $instance = new self();
     $instance->name = $name;
-    $instance->maxUsers = $maxUsers;
-    $instance->currentUsers = $currentUsers;
-    $instance->userId = $userId;
+    $instance->max_users = $max_users;
+    $instance->current_users = $current_users;
+    $instance->creator = $creator;
     $instance->id = $instance::$last_id++;
     return $instance;
   }

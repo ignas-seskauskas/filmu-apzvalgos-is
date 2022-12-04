@@ -1,58 +1,68 @@
-CREATE TABLE `kanalas` (
+--
+-- Database: `imdb_copy`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `channel`
+--
+
+CREATE TABLE `channel` (
   `id` int(11) NOT NULL,
-  `pavadinimas` varchar(50) NOT NULL,
-  `aprasymas` text NOT NULL,
-  `max_vartotojai` int(11) NOT NULL,
-  `sukurimo_laikas` datetime NOT NULL,
-  `paskutinio_aktyvumo_laikas` datetime NOT NULL,
-  `kurejas` int(11) NOT NULL
+  `name` varchar(50) NOT NULL,
+  `description` text NOT NULL,
+  `max_users` int(11) NOT NULL,
+  `create_time` datetime NOT NULL,
+  `last_active_time` datetime NOT NULL,
+  `creator` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `uzblokavimas`
+-- Table structure for table `channel_blocking`
 --
 
-CREATE TABLE `uzblokavimas` (
-  `trukme_min` int(11) NOT NULL,
-  `nuo_kada` datetime NOT NULL,
-  `blokuotojas` int(11) NOT NULL,
-  `blokuojamasis` int(11) NOT NULL
+CREATE TABLE `channel_blocking` (
+  `length_min` int(11) NOT NULL,
+  `start_time` datetime NOT NULL,
+  `user_blocker` int(11) NOT NULL,
+  `user_blocked` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `vartotojas`
+-- Table structure for table `channel_message`
 --
 
-CREATE TABLE `vartotojas` (
+CREATE TABLE `channel_message` (
   `id` int(11) NOT NULL,
-  `vardas` varchar(50) NOT NULL,
-  `pavarde` varchar(50) NOT NULL,
-  `epastas` varchar(100) NOT NULL,
-  `slaptazodis` varchar(128) NOT NULL,
-  `slapyvardis` varchar(50) NOT NULL,
-  `tipas` enum('Moderatorius','Kritikas','Paprastas') NOT NULL,
-  `uzsiregistravimo_data` datetime NOT NULL,
+  `send_time` datetime NOT NULL,
+  `text` text NOT NULL,
+  `channel` int(11) NOT NULL,
+  `sender` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user`
+--
+
+CREATE TABLE `user` (
+  `id` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `surname` varchar(50) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password` varchar(128) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `type` enum('Moderator','Critic','Default') NOT NULL,
+  `register_time` datetime NOT NULL,
   `ip` varchar(15) NOT NULL,
-  `paskutinio_apsilankymo_laikas` datetime NOT NULL,
-  `nuotraukos_nuoroda` varchar(300) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `zinute`
---
-
-CREATE TABLE `zinute` (
-  `id` int(11) NOT NULL,
-  `issiuntimo_laikas` datetime NOT NULL,
-  `tekstas` text NOT NULL,
-  `kanalas` int(11) NOT NULL,
-  `siuntejas` int(11) NOT NULL
+  `last_visit_time` datetime NOT NULL,
+  `avatar_src` varchar(300) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -60,53 +70,53 @@ CREATE TABLE `zinute` (
 --
 
 --
--- Indexes for table `kanalas`
+-- Indexes for table `channel`
 --
-ALTER TABLE `kanalas`
+ALTER TABLE `channel`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `FK_KANALAS_KUREJAS` (`kurejas`);
+  ADD KEY `FK_CHANNEL_CREATOR` (`creator`);
 
 --
--- Indexes for table `uzblokavimas`
+-- Indexes for table `channel_blocking`
 --
-ALTER TABLE `uzblokavimas`
-  ADD PRIMARY KEY (`blokuotojas`,`blokuojamasis`),
-  ADD KEY `FK_UZBLOKAVIMAS_BLOKUOJAMASIS` (`blokuojamasis`);
+ALTER TABLE `channel_blocking`
+  ADD PRIMARY KEY (`user_blocker`,`user_blocked`),
+  ADD KEY `FK_BLOCKING_BLOCKED` (`user_blocked`);
 
 --
--- Indexes for table `vartotojas`
+-- Indexes for table `channel_message`
 --
-ALTER TABLE `vartotojas`
+ALTER TABLE `channel_message`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FK_CMESSAGE_CHANNEL` (`channel`),
+  ADD KEY `FK_CMESSAGE_SENDER` (`sender`);
+
+--
+-- Indexes for table `user`
+--
+ALTER TABLE `user`
   ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `zinute`
---
-ALTER TABLE `zinute`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `FK_ZINUTE_SIUNTEJAS` (`siuntejas`),
-  ADD KEY `FK_ZINUTE_KANALAS` (`kanalas`);
 
 --
 -- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT for table `kanalas`
+-- AUTO_INCREMENT for table `channel`
 --
-ALTER TABLE `kanalas`
+ALTER TABLE `channel`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `vartotojas`
+-- AUTO_INCREMENT for table `channel_message`
 --
-ALTER TABLE `vartotojas`
+ALTER TABLE `channel_message`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `zinute`
+-- AUTO_INCREMENT for table `user`
 --
-ALTER TABLE `zinute`
+ALTER TABLE `user`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -114,22 +124,22 @@ ALTER TABLE `zinute`
 --
 
 --
--- Constraints for table `kanalas`
+-- Constraints for table `channel`
 --
-ALTER TABLE `kanalas`
-  ADD CONSTRAINT `FK_KANALAS_KUREJAS` FOREIGN KEY (`kurejas`) REFERENCES `vartotojas` (`id`);
+ALTER TABLE `channel`
+  ADD CONSTRAINT `FK_CHANNEL_CREATOR` FOREIGN KEY (`creator`) REFERENCES `user` (`id`);
 
 --
--- Constraints for table `uzblokavimas`
+-- Constraints for table `channel_blocking`
 --
-ALTER TABLE `uzblokavimas`
-  ADD CONSTRAINT `FK_UZBLOKAVIMAS_BLOKUOJAMASIS` FOREIGN KEY (`blokuojamasis`) REFERENCES `vartotojas` (`id`),
-  ADD CONSTRAINT `FK_UZBLOKAVIMAS_BLOKUOTOJAS` FOREIGN KEY (`blokuotojas`) REFERENCES `vartotojas` (`id`);
+ALTER TABLE `channel_blocking`
+  ADD CONSTRAINT `FK_BLOCKING_BLOCKED` FOREIGN KEY (`user_blocked`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `FK_BLOCKING_BLOCKER` FOREIGN KEY (`user_blocker`) REFERENCES `user` (`id`);
 
 --
--- Constraints for table `zinute`
+-- Constraints for table `channel_message`
 --
-ALTER TABLE `zinute`
-  ADD CONSTRAINT `FK_ZINUTE_KANALAS` FOREIGN KEY (`kanalas`) REFERENCES `kanalas` (`id`),
-  ADD CONSTRAINT `FK_ZINUTE_SIUNTEJAS` FOREIGN KEY (`siuntejas`) REFERENCES `vartotojas` (`id`);
+ALTER TABLE `channel_message`
+  ADD CONSTRAINT `FK_CMESSAGE_CHANNEL` FOREIGN KEY (`channel`) REFERENCES `channel` (`id`),
+  ADD CONSTRAINT `FK_CMESSAGE_SENDER` FOREIGN KEY (`sender`) REFERENCES `user` (`id`);
 COMMIT;

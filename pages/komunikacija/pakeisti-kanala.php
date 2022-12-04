@@ -21,7 +21,7 @@ $_render = function() {
       </div>
       <div class="form-group">
         <label for="exampleFormControlInput1">Maksimalus vartotojų skaičius</label>
-        <input type="text" class="form-control" id="exampleFormControlInput1" value="<?php echo $channel->maxUsers ?>">
+        <input type="text" class="form-control" id="exampleFormControlInput1" value="<?php echo $channel->max_users ?>">
       </div>
       <br/>
       <center>

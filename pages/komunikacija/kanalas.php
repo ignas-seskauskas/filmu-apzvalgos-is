@@ -213,7 +213,7 @@ $_render = function() {
         </div>
         <div class="kanalas__sidebar-bottom">
           <input class="form-control kanalas__filter" type="text" placeholder="Filtruoti vartotojus"></input>
-          Prisijungę vartotojai: <strong><?php echo $channel->currentUsers . '/' . $channel->maxUsers; ?></strong>
+          Prisijungę vartotojai: <strong><?php echo $channel->current_users . '/' . $channel->max_users; ?></strong>
         </div>
       </div>
       <div class="kanalas__messages">
