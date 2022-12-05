@@ -3,13 +3,51 @@ $_title = "Kanalo sukūrimas";
 $_render = function() {
   ?>
     <script>
+      function setError(error) {
+        $(".errors").html(error);
+      }
+
       $(document).ready(() => {
         $('#create-channel__button').click(() => {
+          setError("");
+
           let values = {};
           const inputs = $('#create-channel__form :input');
           inputs.each(function() {
               values[this.name] = $(this).val();
           });
+
+          let validationSucceed = true;
+
+          Object.keys(values).forEach(key => {
+            if(key !== "" && (values[key] === "" || !values[key])) {
+              console.log(key);
+              setError("Neturėtų būti tuščių reikšmių");
+              validationSucceed = false;
+            }
+          });
+
+          if(values['name'].length > 50) {
+            setError("Maksimalus pavadinimo ilgis: 50");
+            validationSucceed = false;
+          }
+
+          if(values['description'].length > 5000) {
+            setError("Maksimalus aprašymo ilgis: 5000");
+            validationSucceed = false;
+          }
+
+          if(/[^0-9]/.test(values['max_users'])) {
+            setError("Maksimalus vartotojų skaičius turėtų būt sveikas");
+            validationSucceed = false;
+          }
+
+          if(Number(values['max_users']) > 1000) {
+            setError("Maksimalus maksimalus vartotojų skaičius yra 1000");
+            validationSucceed = false;
+          }
+
+          if(!validationSucceed) return;
 
           $.ajax({
             url: "<?php echo $GLOBALS['_pagePrefix'] . '/api/channel/add'; ?>",
@@ -36,7 +74,7 @@ $_render = function() {
       </div>
       <div class="form-group">
         <label for="add-channel-form__max-users">Maksimalus vartotojų skaičius</label>
-        <input type="text" class="form-control" id="add-channel-form__max-users" name="max_users">
+        <input type="number" class="form-control" id="add-channel-form__max-users" name="max_users">
       </div>
       <br/>
       <center>
@@ -45,5 +83,6 @@ $_render = function() {
         </button>
       </center>
     </form>
+    <center><div class="errors"></div></center>
   <?php
 };

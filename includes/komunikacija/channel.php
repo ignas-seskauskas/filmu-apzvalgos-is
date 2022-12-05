@@ -74,11 +74,6 @@ class ChannelController {
 
   function editChannel($channel) {
     $channel = databaseEscapeObject($channel);
-    echo "UPDATE `channel` SET 
-    `name` = '{$channel->name}',
-    `description` = '{$channel->description}',
-    `max_users` = {$channel->max_users} 
-    WHERE `id` = {$channel->id}";
     return databaseQuery("UPDATE `channel` SET 
       `name` = '{$channel->name}',
       `description` = '{$channel->description}',

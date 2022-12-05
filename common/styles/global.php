@@ -117,6 +117,11 @@ function renderStyles() {
     }
   }
 
+  .errors {
+    color: red;
+    margin-top: 1rem;
+  }
+
   <?php
     foreach ($GLOBALS['_styleRenderers'] as &$styleRenderer) {
       $styleRenderer();

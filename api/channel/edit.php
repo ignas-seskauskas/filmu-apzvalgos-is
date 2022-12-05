@@ -1,5 +1,7 @@
 <?php
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
+  $channel = $GLOBALS['_channelController']->getChannelById($_POST['id']);
+
   $GLOBALS['_channelController']->editChannel((object) $_POST);
   $result = array('success' => 'success');
 
