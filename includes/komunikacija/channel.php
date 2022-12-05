@@ -5,34 +5,12 @@ enum ChannelUserStatus: string {
   case Blocked = 'Blocked';
 }
 
-class ChannelUser {
-  public $id;
-  public $name;
-  public $status;
-  public $avatar_src;
-
-  public static function init($id, $name, $status, $avatar_src) {
-    $instance = new self();
-    $instance->id = $id;
-    $instance->name = $name;
-    $instance->status = $status;
-    $instance->avatar_src = $avatar_src;
-    return $instance;
-  }
-}
-
 class ChannelMessage {
-  public $user;
-  public $message;
-  public $time;
-
-  public static function init($user, $message, $time) {
-    $instance = new self();
-    $instance->user = $user;
-    $instance->message = $message;
-    $instance->time = $time;
-    return $instance;
-  }
+  public $id;
+  public $sender;
+  public $text;
+  public $send_time;
+  public $channel;
 }
 
 class Channel {
@@ -45,44 +23,72 @@ class Channel {
   public $creator;
   public $id;
 
-  private static $last_id = 0;
-
-  public static function withoutTimesAndDescription($name, $max_users, $current_users, $creator) {
-    $instance = new self();
-    $instance->name = $name;
-    $instance->max_users = $max_users;
-    $instance->current_users = $current_users;
-    $instance->creator = $creator;
-    $instance->id = $instance::$last_id++;
-    return $instance;
+  public function getCurrentUsers() {
+    return 0;
   }
 
   public function getUsers() {
-    return array(ChannelUser::init(1, "moonrayer", ChannelUserStatus::Online, "https://www.phpbb.com/customise/db/download/133111"),
-      ChannelUser::init(2, "rokas", ChannelUserStatus::Blocked, "https://www.onetap.com/data/avatars/o/230/230519.jpg?1605411773"),
-      ChannelUser::init(3, "test_user", ChannelUserStatus::Writing, "https://gif-avatars.com/img/200x200/gif-1-1.gif"));
+    $escapedId = databaseEscapeString($this->id);
+    $users = databaseFillObjects("SELECT * FROM `user`", function () {return new User();});
+    foreach($users as &$user) {
+      $user->status = ChannelUserStatus::Online;
+    }
+    return $users;
   }
 
   public function getMessages() {
-    return array(ChannelMessage::init($this->getUsers()[0], "Ką tu", "10:23"),
-      ChannelMessage::init($this->getUsers()[2], "Nieko", "10:23"),
-      ChannelMessage::init($this->getUsers()[0], "O dabar", "10:25"));
+    $escapedId = databaseEscapeString($this->id);
+    return databaseFillObjects("SELECT * FROM `channel_message` WHERE `channel` = {$escapedId}", function () {return new ChannelMessage();});
   }
 }
 
 class ChannelController {
   function getChannels($page = 0) {
-    $channels = [Channel::withoutTimesAndDescription("Amazing Channel", 50, 3, 1), 
-      Channel::withoutTimesAndDescription("Game of Thrones fans", 20, 1, 1),
-      Channel::withoutTimesAndDescription("Anime suggestions", 50, 3, 1),
-      Channel::withoutTimesAndDescription("Come here to share your favourite movies :)", 100, 95, 2),
-      Channel::withoutTimesAndDescription("New spooderman movie review talk", 50, 20, 2),
-      Channel::withoutTimesAndDescription("Spongebob meme finders", 69, 69, 2)];
-    return $channels;
+    return databaseFillObjects("SELECT * FROM `channel`", function () {return new Channel();});
   }
 
   function getChannelById($id) {
-    return $this->getChannels()[$id];
+    $escapedId = databaseEscapeString($id);
+    return databaseFillObject("SELECT * FROM `channel` WHERE `id` = {$escapedId}", function () {return new Channel();});
+  }
+
+  function writeMessage($data) {
+    $channelId = $data->channelId;
+    $message = $data->message;
+  }
+
+  function addChannel($channel) {
+    $currentUser = $GLOBALS['_userController']->getCurrentUser();
+    $channel = databaseEscapeObject($channel);
+    databaseQuery("INSERT INTO `channel` (`name`, `description`, `max_users`, `create_time`, `last_active_time`, `creator`) 
+                   VALUES ('{$channel->name}', '{$channel->description}', {$channel->max_users}, NOW(), NOW(), {$currentUser->id})");
+    return databaseInsertId();
+  }
+
+  function removeChannel($data) {
+    $escapedId = databaseEscapeString($data->id);
+    databaseQuery("DELETE FROM `channel_message` WHERE `channel` = $escapedId");
+    databaseQuery("UPDATE `user` SET `channel` = NULL WHERE `channel` = $escapedId");
+    return databaseQuery("DELETE FROM `channel` WHERE `id` = $escapedId");
+  }
+
+  function editChannel($channel) {
+    $channel = databaseEscapeObject($channel);
+    echo "UPDATE `channel` SET 
+    `name` = '{$channel->name}',
+    `description` = '{$channel->description}',
+    `max_users` = {$channel->max_users} 
+    WHERE `id` = {$channel->id}";
+    return databaseQuery("UPDATE `channel` SET 
+      `name` = '{$channel->name}',
+      `description` = '{$channel->description}',
+      `max_users` = {$channel->max_users} 
+      WHERE `id` = {$channel->id}");
+  }
+
+  function filterByName($name) {
+    $escapedName = databaseEscapeString($name);
+    return databaseFillObjects("SELECT * FROM `channel` WHERE `name` LIKE '%$escapedName%'", function () {return new Channel();});
   }
 }
 

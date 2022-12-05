@@ -43,6 +43,18 @@ if (isset($_GET['page'])) {
     case 'komentaru-redagavimas':
       require('pages/komentarai/komentaru-redagavimas.php');
       break;
+    case 'api/channel/add':
+      require('api/channel/add.php');
+      break;
+    case 'api/channel/edit':
+      require('api/channel/edit.php');
+      break;
+    case 'api/channel/remove':
+      require('api/channel/remove.php');
+      break;
+    case 'api/channel/get':
+      require('api/channel/get.php');
+      break;
     default:
       require('pages/404.php');
       break;

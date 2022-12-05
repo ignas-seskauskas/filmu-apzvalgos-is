@@ -3,19 +3,28 @@
 include('user_permissions.php');
 
 class User {
-  public $type;
   public $id;
-  public $permissions;
+  public $name;
+  public $surname;
+  public $email;
+  public $password;
+  public $username;
+  public $type;
+  public $register_time;
+  public $ip;
+  public $last_visit_time;
+  public $avatar_src;
+  public $channel;
+  public $status;
+
+  function getPermissions() {
+    return $GLOBALS['_permissions'][$this->type];
+  }
 }
 
 class UserController {
   function getCurrentUser() {
-    $user = new User();
-    $user->type = UserType::Default;
-    $user->id = 1;
-    $user->permissions = $GLOBALS['_permissions'][$user->type->value];
-
-    return $user;
+    return databaseFillObject("SELECT * FROM `user` WHERE `id` = 2", function () {return new User();});
   }
 }
 

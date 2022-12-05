@@ -213,7 +213,7 @@ $_render = function() {
         </div>
         <div class="kanalas__sidebar-bottom">
           <input class="form-control kanalas__filter" type="text" placeholder="Filtruoti vartotojus"></input>
-          Prisijungę vartotojai: <strong><?php echo $channel->current_users . '/' . $channel->max_users; ?></strong>
+          Prisijungę vartotojai: <strong><?php echo $channel->getCurrentUsers() . '/' . $channel->max_users; ?></strong>
         </div>
       </div>
       <div class="kanalas__messages">
@@ -224,24 +224,24 @@ $_render = function() {
 
             ?> 
             <div class="kanalas__message-wrapper <?php 
-            if($message->user->id == $currentUser->id) echo 'kanalas__message-wrapper--yours'; 
+            if($message->sender->id == $currentUser->id) echo 'kanalas__message-wrapper--yours'; 
           ?>">
-            <img src="<?php echo $message->user->avatar_src ?>" class="rounded-circle kanalas__message-avatar kanalas__user-avatar">
+            <img src="<?php echo $message->sender->avatar_src ?>" class="rounded-circle kanalas__message-avatar kanalas__user-avatar">
             <div class="kanalas__message <?php 
-            if($message->user->id == $currentUser->id) echo 'kanalas__message--yours'; 
+            if($message->sender->id == $currentUser->id) echo 'kanalas__message--yours'; 
           ?>"> 
               
 
               <div class="kanalas__message-top">
-                <?php echo $message->user->name ?>
-                <span class="kanalas__message-time"><?php echo $message->time ?></span>
+                <?php echo $message->sender->name ?>
+                <span class="kanalas__message-time"><?php echo $message->send_time ?></span>
               </div>
 
               <div class="kanalas__message-block
             <?php 
-              if($message->user->id == $currentUser->id) echo 'kanalas__message-block--yours'; 
+              if($message->sender->id == $currentUser->id) echo 'kanalas__message-block--yours'; 
             ?>">
-              <?php echo $message->message ?>
+              <?php echo $message->text ?>
             </div> 
             
             </div> 
