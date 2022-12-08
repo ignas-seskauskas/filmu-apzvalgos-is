@@ -1,4 +1,6 @@
 <?php
+require __DIR__ . '/vendor/autoload.php';
+
 require('settings.php');
 require('styles.php');
 require('includes.php');

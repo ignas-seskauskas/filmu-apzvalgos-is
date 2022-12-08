@@ -26,6 +26,12 @@ class UserController {
   function getCurrentUser() {
     return databaseFillObject("SELECT * FROM `user` WHERE `id` = 2", function () {return new User();});
   }
+
+  function getUserById($id) {
+    $escapedId = databaseEscapeString($id);
+    return databaseFillObject("SELECT * FROM `user` WHERE `id` = {$escapedId}", function () {return new User();});
+  }
+
 }
 
 $_userController = new UserController();
