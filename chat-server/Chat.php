@@ -85,7 +85,7 @@ class Chat implements MessageComponentInterface {
 
             $userIdsString = implode(';', $userIds);
             $client->conn->send("~~~get_users~~~{$userIdsString}");
-            echo "User {$client->userId} asked for online users\n";
+            echo "User {$client->userId} asked for online users for channel {$client->channelId}\n";
         } else if($command == "message") {
             $message = $args;
 
@@ -95,7 +95,7 @@ class Chat implements MessageComponentInterface {
                 }
             }
 
-            echo "User {$client->userId} sent a message: {$message}\n";
+            echo "User {$client->userId} sent a message to channel {$client->channelId}: {$message}\n";
         }
     }
 
