@@ -122,6 +122,11 @@ function renderStyles() {
     margin-top: 1rem;
   }
 
+  ::-webkit-scrollbar { width: 8px; height: 0px;}
+  ::-webkit-scrollbar-button { height: 0; }
+  ::-webkit-scrollbar-track-piece { background-color: #2c3136;}
+  ::-webkit-scrollbar-thumb { height: 50px; background-color: #666; border-radius: 5px;}
+
   <?php
     foreach ($GLOBALS['_styleRenderers'] as &$styleRenderer) {
       $styleRenderer();

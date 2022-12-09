@@ -25,8 +25,8 @@ class Chat implements MessageComponentInterface {
         $querystring = $conn->httpRequest->getUri()->getQuery();
         parse_str($querystring, $queryArray);
 
-        if(!isset($queryArray['channel']) || !isset($queryArray['channel'])) {
-            echo "Rejected: Connection was not established because of wrong parameters";
+        if(!isset($queryArray['channel']) || !isset($queryArray['user'])) {
+            echo "Rejected: Connection was not established because of wrong parameters\n";
             $conn->close();
             return;
         }
@@ -36,10 +36,21 @@ class Chat implements MessageComponentInterface {
         $channel = $GLOBALS['_channelController']->getChannelById($channelId);
 
         if(!isset($channel)) {
-            echo "Rejected: Tried to establish connection to non existant channel";
+            echo "Rejected: Tried to establish connection to non existent channel\n";
             $conn->close();
             return;
         }
+
+        $user = $GLOBALS['_userController']->getUserById($userId);
+        
+
+        if(!isset($user)) {
+            echo "Rejected: Tried to establish connection with non existent user\n";
+            $conn->close();
+            return;
+        }
+
+        $userJson = json_encode($user);
 
         //TODO: Check if user id is authenticated
 
@@ -57,6 +68,12 @@ class Chat implements MessageComponentInterface {
         $this->clients->attach($client);
         
         echo "New connection! ({$conn->resourceId}, userId: {$userId}, channelId: {$channelId})\n";
+
+        foreach ($this->clients as $currentClient) {
+            if ($conn !== $currentClient->conn && $currentClient->channelId == $channelId) {
+                $currentClient->conn->send("~~~connect~~~{$userJson}");
+            }
+        }
     }
 
     public function onMessage(ConnectionInterface $from, $msg) {
@@ -83,19 +100,33 @@ class Chat implements MessageComponentInterface {
                 }
             }
 
-            $userIdsString = implode(';', $userIds);
-            $client->conn->send("~~~get_users~~~{$userIdsString}");
+            $users = $GLOBALS['_userController']->getUsersByIds($userIds);
+            $usersJson = json_encode($users);
+            $client->conn->send("~~~get_users~~~{$usersJson}");
             echo "User {$client->userId} asked for online users for channel {$client->channelId}\n";
         } else if($command == "message") {
             $message = $args;
+            //TODO: get current timezone
+            $currentTime = time() + 3600 * 2;
+            $channel = $GLOBALS['_channelController']->getChannelById($client->channelId);
+
+            $channelMessage = new ChannelMessage();
+            $channelMessage->sender = $client->userId;
+            $channelMessage->text = $message;
+            $channelMessage->send_time = $currentTime;
+            $channelMessage->channel = $client->channelId;
+            echo($channel->addMessage($channelMessage));
 
             foreach ($this->clients as $currentClient) {
-                if ($from !== $currentClient->conn && $currentClient->channelId == $client->channelId) {
-                    $currentClient->conn->send($msg);
+                if ($currentClient->channelId == $client->channelId) {
+                    $currentClient->conn->send("~~~message~~~{$client->userId}~&~{$currentTime}~&~{$message}");
                 }
             }
 
             echo "User {$client->userId} sent a message to channel {$client->channelId}: {$message}\n";
+        } else if($command == "users_count") {
+            $usersCount = $this->getChannelUserCount($client->channelId);
+            $from->send("~~~users_count~~~$usersCount");
         }
     }
 
@@ -104,6 +135,23 @@ class Chat implements MessageComponentInterface {
             if ($conn == $client->conn) {
                 $this->clients->detach($client);
                 echo "Connection {$conn->resourceId} has disconnected\n";
+
+                if($this->getCountOfSameUserInChannel($client->channelId, $client->userId) < 1) {
+                    foreach ($this->clients as $currentClient) {
+                        if ($currentClient->channelId == $client->channelId) {
+                            $currentClient->conn->send("~~~disconnect~~~{$client->userId}");
+                        }
+                    }
+                }
+
+                $usersCount = $this->getChannelUserCount($client->channelId);
+                foreach ($this->clients as $currentClient) {
+                    if ($currentClient->channelId == $client->channelId) {
+                        $currentClient->conn->send("~~~users_count~~~{$usersCount}");
+                    }
+                }
+
+                return;
             }
         }
     }
@@ -117,6 +165,17 @@ class Chat implements MessageComponentInterface {
         $count = 0;
         foreach ($this->clients as $client) {
             if($client->channelId == $channelId) {
+                $count++;
+            }
+        }
+
+        return $count;
+    }
+
+    private function getCountOfSameUserInChannel(int $channelId, int $userId) {
+        $count = 0;
+        foreach ($this->clients as $client) {
+            if($client->channelId == $channelId && $client->userId == $userId) {
                 $count++;
             }
         }

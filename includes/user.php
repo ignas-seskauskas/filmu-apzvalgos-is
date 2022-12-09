@@ -27,11 +27,15 @@ class UserController {
     return databaseFillObject("SELECT * FROM `user` WHERE `id` = 2", function () {return new User();});
   }
 
-  function getUserById($id) {
-    $escapedId = databaseEscapeString($id);
-    return databaseFillObject("SELECT * FROM `user` WHERE `id` = {$escapedId}", function () {return new User();});
+  function getUsersByIds($ids) {
+    $idsImploded = implode(",", $ids);
+    return databaseFillObjects("SELECT * FROM `user` WHERE `id` IN ({$idsImploded})", function () {return new User();});
   }
 
+  function getUserById($id) {
+    $escapedId = databaseEscapeString($id);
+    return databaseFillObject("SELECT * FROM `user` WHERE `id` = $escapedId", function () {return new User();});
+  }
 }
 
 $_userController = new UserController();

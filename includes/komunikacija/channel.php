@@ -11,6 +11,12 @@ class ChannelMessage {
   public $text;
   public $send_time;
   public $channel;
+
+  public function getTimeString() {
+    $h = sprintf('%02d', $this->send_time / 3600 % 24);
+    $m = sprintf('%02d', $this->send_time / 60 % 60); 
+    return "{$h}:{$m}";
+  }
 }
 
 class Channel {
@@ -39,6 +45,13 @@ class Channel {
   public function getMessages() {
     $escapedId = databaseEscapeString($this->id);
     return databaseFillObjects("SELECT * FROM `channel_message` WHERE `channel` = {$escapedId}", function () {return new ChannelMessage();});
+  }
+
+  public function addMessage(ChannelMessage $channelMessage) {
+    $channelMessage = databaseEscapeObject($channelMessage);
+    databaseQuery("INSERT INTO `channel_message` (`sender`, `text`, `send_time`, `channel`) 
+                   VALUES ({$channelMessage->sender}, '{$channelMessage->text}', {$channelMessage->send_time}, {$channelMessage->channel})");
+    return databaseInsertId();
   }
 }
 
