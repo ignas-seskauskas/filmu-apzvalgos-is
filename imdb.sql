@@ -447,3 +447,7 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+INSERT INTO `user` (`name`, `surname`, `email`, `password`, `username`, `type`, `register_time`, `ip`, `last_visit_time`, `avatar_src`, `channel`) VALUES ('User', 'User', 'user@u.c', 'asd', 'User', 'Critic', '2022-12-13 21:32:57', '1.1.1.1', '2022-12-13 21:32:57', 'https://mir-s3-cdn-cf.behance.net/project_modules/disp/122807112736829.601a1ab649d2b.gif', NULL);
+
+ALTER TABLE `channel` ADD `online_users` INT NOT NULL AFTER `creator`;

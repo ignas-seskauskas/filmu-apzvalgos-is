@@ -185,7 +185,7 @@ CREATE TABLE Komentaro_ivertinimas
 CREATE TABLE channel_message
 (
 	`id` int(11) NOT NULL,
-  `send_time` datetime NOT NULL,
+  `send_time` int NOT NULL,
   `text` text NOT NULL,
   `channel` int(11) NOT NULL,
   `sender` int(11) NOT NULL
@@ -217,3 +217,7 @@ INSERT INTO `user` (`id`, `name`, `surname`, `email`, `password`, `username`, `t
 INSERT INTO `channel` (`id`, `name`, `description`, `max_users`, `create_time`, `last_active_time`, `creator`) VALUES
 (4, 'Test', 'Test', 3, '2022-12-13 22:14:54', '2022-12-13 22:14:54', 3),
 (5, 'Test2', 'asd', 5, '2022-12-13 22:21:26', '2022-12-13 22:21:26', 3);
+
+INSERT INTO `user` (`name`, `surname`, `email`, `password`, `username`, `type`, `register_time`, `ip`, `last_visit_time`, `avatar_src`, `channel`) VALUES ('User', 'User', 'user@u.c', 'asd', 'User', 'Critic', '2022-12-13 21:32:57', '1.1.1.1', '2022-12-13 21:32:57', 'https://mir-s3-cdn-cf.behance.net/project_modules/disp/122807112736829.601a1ab649d2b.gif', NULL);
+
+ALTER TABLE `channel` ADD `online_users` INT NOT NULL AFTER `creator`;

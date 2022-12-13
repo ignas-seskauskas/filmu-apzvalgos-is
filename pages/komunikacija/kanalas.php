@@ -170,6 +170,7 @@ $_render = function() {
   ?>
     <script>
       let users = [];
+      let nameFilter = "";
 
       function addUserToChat(user) {
         const userStatus = "Online";
@@ -178,6 +179,7 @@ $_render = function() {
           userStatus === "Writing" ? "kanalas__status--writing bi bi-chat-dots" :
           userStatus === "Blocked" ? "kanalas__status--blocked bi bi-dash-circle" : 
           "";
+        user.id = Number(user.id);
 
         const newComponent = `
           <div class="kanalas__user kanalas__user--${user.id}" aria-current="true">
@@ -205,21 +207,28 @@ $_render = function() {
           </div>
           `;
         
-        $('.kanalas__users').append(newComponent);
-        users.push(user);
+        if(user.name.includes(nameFilter) && $(`.kanalas__user--${user.id}`).length < 1) {
+          $('.kanalas__users').append(newComponent);
+        }
+        
+        if(!users.some(userArg => userArg.id == user.id)) {
+          users.push(user);
+        }
       }
 
       function removeUserFromChat(userId) {
-        $(`kanalas__user--${userId}`).eq(1).remove();
+        $(`.kanalas__user--${userId}`).first().remove();
+        const index = users.findIndex(user => user.id == userId);
+        if (index > -1) {
+          users.splice(index, 1);
+        }
       }
 
       function addMessage(message) {
         const user = users.find(user => user.id === message.sender);
-
         const hours = `${Math.floor(message.time / 3600) % 24}`.padStart(2, '0');
         const minutes = `${Math.floor(message.time / 60) % 60}`.padStart(2, '0');
         const formattedTime = `${hours}:${minutes}`;
-        console.log(message.time);
 
         const currentUserId = <?php echo $currentUser->id; ?>;
 
@@ -243,7 +252,31 @@ $_render = function() {
         $('.kanalas__messages').scrollTop($('.kanalas__messages').prop("scrollHeight"));
       }
 
+      let nameFilterTimer = null;
+
+      function getLoader() {
+        return `<center><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></center>`;
+      }
+
+      function debounceFilter(func, timeout){
+        if(nameFilterTimer == null) {
+          $('.kanalas__users').html(getLoader());
+        }
+
+        return (...args) => {
+          clearTimeout(nameFilterTimer);
+          nameFilterTimer = setTimeout(() => { func.apply(this, args); nameFilterTimer = null; }, timeout);
+        };
+      }
+
       $(document).ready(() => {
+        $(".kanalas__filter").on("input", (elem) => {
+          debounceFilter((value) => { 
+            conn.send(`~~~get_users~~~${value}`);
+            nameFilter = value;
+          }, 300)(elem.currentTarget.value);
+        });
+
         const websocketUrl = '<?php echo $GLOBALS['_websocketServerUrl']; ?>';
         const currentUserId = <?php echo $currentUser->id; ?>;
         const channelId = <?php echo $channel->id; ?>;
@@ -268,8 +301,9 @@ $_render = function() {
               addUserToChat(user);
             conn.send('~~~users_count~~~');
           } else if(command === "get_users") {
-            const users = JSON.parse(args);
-            users.forEach(addUserToChat);
+            $('.kanalas__users').html("");
+            const usersJson = JSON.parse(args);
+            usersJson.forEach(addUserToChat);
           } else if(command === "message") {
             console.log("received");
             const argsRegex = /^(.*)~&~(.*)~&~(.*)$/;
@@ -302,6 +336,8 @@ $_render = function() {
 
         $('.kanalas__messages').scrollTop($('.kanalas__messages').prop("scrollHeight"));
       });
+
+      
       
     </script>
     <div class="kanalas__wrapper">
@@ -335,7 +371,7 @@ $_render = function() {
 
                   if(!users.some(user => user.id == currentUserId)) {
                     users.push({
-                      currentUserId,
+                      id: currentUserId,
                       name: "<?php echo $currentUser->name; ?>",
                       avatar_src: "<?php echo $currentUser->avatar_src; ?>"
                     });

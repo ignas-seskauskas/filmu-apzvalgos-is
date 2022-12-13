@@ -30,19 +30,27 @@ class UserController
   {
     if(!isset($_SESSION['user']))
       return null;
-      
+
     $escapedId = databaseEscapeString($_SESSION['user']);
     return databaseFillObject("SELECT * FROM `user` WHERE `id` = $escapedId", function () {
       return new User();
     });
   }
 
-  function getUsersByIds($ids)
+  function getUsersByIds($ids, $filter)
   {
     $idsImploded = implode(",", $ids);
-    return databaseFillObjects("SELECT * FROM `user` WHERE `id` IN ({$idsImploded})", function () {
-      return new User();
-    });
+    if(isset($filter) && $filter != "") {
+      $escapedFilter = databaseEscapeString($filter);
+      return databaseFillObjects("SELECT * FROM `user` WHERE `id` IN ({$idsImploded}) AND `name` LIKE '%$filter%'", function () {
+        return new User();
+      });
+    } else {
+      return databaseFillObjects("SELECT * FROM `user` WHERE `id` IN ({$idsImploded})", function () {
+        return new User();
+      });
+    }
+    
   }
 
   function getUserById($id)
