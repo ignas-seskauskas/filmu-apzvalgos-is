@@ -2,9 +2,9 @@
 $_title = "Komentarų pridėjimas";
 if (isset($_POST["addComment"])) {
 	$dbc = mysqli_connect($GLOBALS['_mysqlHost'], $GLOBALS['_mysqlUsername'], $GLOBALS['_mysqlPassword'], $GLOBALS['_mysqlDatabase']);
-	$sql = "INSERT INTO `komentarai` (`tekstas`, `data`, `reitingas`, `antraste` `fk_filmoID`, `fk_komentaroIvertinimoID`) 
+	$sql = "INSERT INTO `komentaras` (`tekstas`, `data`, `reitingas`, `antraste` `fk_filmoID`, `fk_komentaroIvertinimoID`) 
                           VALUES ('tekstas', 'data', 'reitingas', 'antraste', 'fk1', 'fk2')";
-	echo $sql;
+	echo $dbc;
 	//$result = mysqli_query($dbc, $sql);
 }
 $_render = function () {
