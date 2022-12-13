@@ -51,6 +51,8 @@ $_render = function () {
           success: (response) => {
             if (response.success != null || response.success != undefined) {
               location.href = 'prisijungti';
+            } else if (response.error.includes('user with this email already exists')) {
+              setError("Šis e-paštas jau užregistruotas");
             }
             console.log(response);
           },
