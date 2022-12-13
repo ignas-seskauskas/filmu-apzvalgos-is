@@ -2,6 +2,12 @@
 
 include('user_permissions.php');
 
+class ChannelBlocking
+{
+  public $user_blocker;
+  public $user_blocked;
+}
+
 class User
 {
   public $id;
@@ -22,6 +28,28 @@ class User
   {
     return $GLOBALS['_permissions'][$this->type];
   }
+
+  function isBlocked()
+  {
+    $currentUser = $GLOBALS['_userController']->getCurrentUser();
+    if(!isset($currentUser))
+      return false;
+    $blocking = databaseFillObject("SELECT * FROM `channel_blocking` WHERE `user_blocker` = {$currentUser->id} AND `user_blocked` = {$this->id}", function () {
+      return new ChannelBlocking();
+    });
+    return isset($blocking);
+  }
+
+  function toggleBlock() {
+    $currentUser = $GLOBALS['_userController']->getCurrentUser();
+    if(!isset($currentUser))
+      return;
+    if($this->isBlocked()) {
+      return databaseQuery("DELETE FROM `channel_blocking` WHERE `user_blocker` = {$currentUser->id} AND `user_blocked` = {$this->id}");
+    } else {
+      return databaseQuery("INSERT INTO `channel_blocking` (`user_blocker`,`user_blocked`) VALUES ({$currentUser->id}, {$this->id})");
+    }
+  }
 }
 
 class UserController
@@ -30,19 +58,27 @@ class UserController
   {
     if(!isset($_SESSION['user']))
       return null;
-      
+
     $escapedId = databaseEscapeString($_SESSION['user']);
     return databaseFillObject("SELECT * FROM `user` WHERE `id` = $escapedId", function () {
       return new User();
     });
   }
 
-  function getUsersByIds($ids)
+  function getUsersByIds($ids, $filter)
   {
     $idsImploded = implode(",", $ids);
-    return databaseFillObjects("SELECT * FROM `user` WHERE `id` IN ({$idsImploded})", function () {
-      return new User();
-    });
+    if(isset($filter) && $filter != "") {
+      $escapedFilter = databaseEscapeString($filter);
+      return databaseFillObjects("SELECT * FROM `user` WHERE `id` IN ({$idsImploded}) AND `name` LIKE '%$filter%'", function () {
+        return new User();
+      });
+    } else {
+      return databaseFillObjects("SELECT * FROM `user` WHERE `id` IN ({$idsImploded})", function () {
+        return new User();
+      });
+    }
+    
   }
 
   function getUserById($id)

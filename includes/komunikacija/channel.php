@@ -28,6 +28,7 @@ class Channel {
   public $current_users;
   public $creator;
   public $id;
+  public $online_users;
 
   public function getCurrentUsers() {
     return 0;
@@ -56,6 +57,16 @@ class Channel {
 }
 
 class ChannelController {
+  function resetOnlineUsers() {
+    return databaseQuery("UPDATE `channel` SET `online_users` = 0");
+  }
+
+  function setChannelOnlineUsers($id, $online_users) {
+    $escapedOnlineUsers = databaseEscapeString($online_users);
+    $escapedId = databaseEscapeString($id);
+    return databaseQuery("UPDATE `channel` SET `online_users` = {$escapedOnlineUsers} WHERE `id` = {$escapedId}");
+  }
+
   function getChannels($page = 0) {
     return databaseFillObjects("SELECT * FROM `channel`", function () {return new Channel();});
   }

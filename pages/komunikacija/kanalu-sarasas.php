@@ -34,12 +34,11 @@ $_render = function() {
       }
 
       function addChannelToTable(channel) {
-        const removeAllChannels = <?php echo $currentUser->getPermissions()->removeAllChannels; ?>;
-        const editAllChannels = <?php echo $currentUser->getPermissions()->editAllChannels; ?>;
+        const removeAllChannels = <?php echo $currentUser->getPermissions()->removeAllChannels ? 1 : 0; ?>;
+        const editAllChannels = <?php echo $currentUser->getPermissions()->editAllChannels ? 1 : 0; ?>;
         const userId = <?php echo $currentUser->id; ?>;
         const channelUrl = "<?php echo $GLOBALS['_pagePrefix'] .'/kanalas&id='; ?>";
         const changeChannelUrl = "<?php echo $GLOBALS['_pagePrefix'] .'/pakeisti-kanala&id='; ?>";
-        const currentUsersOfChannel = 0;
 
         const editButton = `
           <button type="button" class="btn btn-primary" 
@@ -57,7 +56,7 @@ $_render = function() {
         $('.kanalu-sarasas__table').find('tbody').append(`
           <tr>
             <td><a href="${channelUrl}${channel.id}">${channel.name}</a></td>
-            <td>${currentUsersOfChannel}/${channel.max_users}</td>
+            <td>${channel.online_users}/${channel.max_users}</td>
             <td>
               ${editAllChannels || channel.creator === userId ? editButton : ""}
               ${removeAllChannels || channel.creator === userId ? removeButton : ""}

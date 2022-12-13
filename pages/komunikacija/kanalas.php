@@ -151,6 +151,10 @@ array_push($GLOBALS['_styleRenderers'], function() {
     .kanalas__filter {
       margin-bottom: 0.25rem;
     }
+
+    .kanalas__message-block--blocked {
+      font-style: italic;
+    }
   <?php
 });
 
@@ -170,56 +174,91 @@ $_render = function() {
   ?>
     <script>
       let users = [];
+      let nameFilter = "";
+
+      function toggleBlock(userId) {
+        $.ajax({
+          url: "<?php echo $GLOBALS['_pagePrefix'] . '/api/channel/toggle_block'; ?>",
+          type: 'POST',
+          data: {user_id: userId},
+          success: (data) => {
+            location.reload();
+          },
+          error: console.log
+        });
+      }
 
       function addUserToChat(user) {
-        const userStatus = "Online";
-        const userStatusClass = 
-          userStatus === "Online" ? "kanalas__status--online" :
-          userStatus === "Writing" ? "kanalas__status--writing bi bi-chat-dots" :
-          userStatus === "Blocked" ? "kanalas__status--blocked bi bi-dash-circle" : 
-          "";
+        user.id = Number(user.id);
 
-        const newComponent = `
-          <div class="kanalas__user kanalas__user--${user.id}" aria-current="true">
-            <div class="kanalas__user-avatar-wrapper">
-              <img src="${user.avatar_src}" class="rounded-circle kanalas__user-avatar">
-              <span class="position-absolute top-0 rounded-circle kanalas__status
-                ${userStatusClass}
-              ">
-                
-              </span>
-            </div>
-            ${user.name}
-            <div style="flex: 1;"></div>
-            <div class="dropdown">
-              <a class="btn kanalas__user-more" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-three-dots-vertical"></i>
-              </a>
+        $.ajax({
+            url: "<?php echo $GLOBALS['_pagePrefix'] . '/api/channel/get_blocked'; ?>",
+            type: 'POST',
+            data: {
+              user_id: user.id
+            },
+            success: (data) => {
+              user.blocked = data.payload.blocked;
+              console.log(user.blocked);
 
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                ${userStatus === "Blocked" ? 
-                  '<li><a class="dropdown-item" href="#">Atblokuoti</a></li>' :
-                  '<li><a class="dropdown-item" href="#">Užblokuoti</a></li>'}
-              </ul>
-            </div>
-          </div>
-          `;
-        
-        $('.kanalas__users').append(newComponent);
-        users.push(user);
+              const userStatus = user.blocked ? "Blocked" : "Online";
+              const userStatusClass = 
+                userStatus === "Online" ? "kanalas__status--online" :
+                userStatus === "Writing" ? "kanalas__status--writing bi bi-chat-dots" :
+                userStatus === "Blocked" ? "kanalas__status--blocked bi bi-dash-circle" : 
+                "";
+
+              const newComponent = `
+                <div class="kanalas__user kanalas__user--${user.id}" aria-current="true">
+                  <div class="kanalas__user-avatar-wrapper">
+                    <img src="${user.avatar_src}" class="rounded-circle kanalas__user-avatar">
+                    <span class="position-absolute top-0 rounded-circle kanalas__status
+                      ${userStatusClass}
+                    ">
+                      
+                    </span>
+                  </div>
+                  ${user.name}
+                  <div style="flex: 1;"></div>
+                  <div class="dropdown">
+                    <a class="btn kanalas__user-more" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="bi bi-three-dots-vertical"></i>
+                    </a>
+
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                      ${userStatus === "Blocked" ? 
+                        `<li><a class="dropdown-item" href="#" onclick="toggleBlock(${user.id})">Atblokuoti</a></li>` :
+                        `<li><a class="dropdown-item" href="#" onclick="toggleBlock(${user.id})">Užblokuoti</a></li>`}
+                    </ul>
+                  </div>
+                </div>
+                `;
+              
+              if(user.name.includes(nameFilter) && $(`.kanalas__user--${user.id}`).length < 1) {
+                $('.kanalas__users').append(newComponent);
+              }
+              
+              if(!users.some(userArg => userArg.id == user.id)) {
+                users.push(user);
+              }
+            },
+            error: console.log
+				  });
       }
 
       function removeUserFromChat(userId) {
-        $(`kanalas__user--${userId}`).eq(1).remove();
+        $(`.kanalas__user--${userId}`).first().remove();
+        const index = users.findIndex(user => user.id == userId);
+        if (index > -1) {
+          users.splice(index, 1);
+        }
       }
 
       function addMessage(message) {
         const user = users.find(user => user.id === message.sender);
-
         const hours = `${Math.floor(message.time / 3600) % 24}`.padStart(2, '0');
         const minutes = `${Math.floor(message.time / 60) % 60}`.padStart(2, '0');
         const formattedTime = `${hours}:${minutes}`;
-        console.log(message.time);
 
         const currentUserId = <?php echo $currentUser->id; ?>;
 
@@ -232,8 +271,9 @@ $_render = function() {
                 <span class="kanalas__message-time">${formattedTime}</span>
               </div>
 
-              <div class="kanalas__message-block ${currentUserId === user.id ? 'kanalas__message-block--yours' : ''}">
-              ${message.text}
+              <div class="kanalas__message-block ${currentUserId === user.id ? 'kanalas__message-block--yours' : ''}
+                ${user.blocked ? 'kanalas__message-block--blocked' : ''}">
+              ${user.blocked ? "Blocked." : message.text}
             </div> 
             </div> 
           </div>
@@ -243,7 +283,31 @@ $_render = function() {
         $('.kanalas__messages').scrollTop($('.kanalas__messages').prop("scrollHeight"));
       }
 
+      let nameFilterTimer = null;
+
+      function getLoader() {
+        return `<center><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></center>`;
+      }
+
+      function debounceFilter(func, timeout){
+        if(nameFilterTimer == null) {
+          $('.kanalas__users').html(getLoader());
+        }
+
+        return (...args) => {
+          clearTimeout(nameFilterTimer);
+          nameFilterTimer = setTimeout(() => { func.apply(this, args); nameFilterTimer = null; }, timeout);
+        };
+      }
+
       $(document).ready(() => {
+        $(".kanalas__filter").on("input", (elem) => {
+          debounceFilter((value) => { 
+            conn.send(`~~~get_users~~~${value}`);
+            nameFilter = value;
+          }, 300)(elem.currentTarget.value);
+        });
+
         const websocketUrl = '<?php echo $GLOBALS['_websocketServerUrl']; ?>';
         const currentUserId = <?php echo $currentUser->id; ?>;
         const channelId = <?php echo $channel->id; ?>;
@@ -268,8 +332,9 @@ $_render = function() {
               addUserToChat(user);
             conn.send('~~~users_count~~~');
           } else if(command === "get_users") {
-            const users = JSON.parse(args);
-            users.forEach(addUserToChat);
+            $('.kanalas__users').html("");
+            const usersJson = JSON.parse(args);
+            usersJson.forEach(addUserToChat);
           } else if(command === "message") {
             console.log("received");
             const argsRegex = /^(.*)~&~(.*)~&~(.*)$/;
@@ -302,6 +367,8 @@ $_render = function() {
 
         $('.kanalas__messages').scrollTop($('.kanalas__messages').prop("scrollHeight"));
       });
+
+      
       
     </script>
     <div class="kanalas__wrapper">
@@ -319,27 +386,23 @@ $_render = function() {
           <?php
             foreach ($messages as &$message) {
               $messageUser = $GLOBALS['_userController']->getUserById($message->sender);
+              $messageUserBlocked = $messageUser->isBlocked();
               ?> 
               <script>
                 $(document).ready(() => {
                   const id = <?php echo $messageUser->id; ?>;
                   const currentUserId = <?php echo $currentUser->id; ?>;
 
-                  if(!users.some(user => user.id == id)) {
-                    users.push({
-                      id,
-                      name: "<?php echo $messageUser->name; ?>",
-                      avatar_src: "<?php echo $messageUser->avatar_src; ?>"
-                    });
-                  }
-
-                  if(!users.some(user => user.id == currentUserId)) {
-                    users.push({
-                      currentUserId,
-                      name: "<?php echo $currentUser->name; ?>",
-                      avatar_src: "<?php echo $currentUser->avatar_src; ?>"
-                    });
-                  }
+                  addUserToChat({
+                    id,
+                    name: "<?php echo $messageUser->name; ?>",
+                    avatar_src: "<?php echo $messageUser->avatar_src; ?>"
+                  });
+                  addUserToChat({
+                    id: currentUserId,
+                    name: "<?php echo $currentUser->name; ?>",
+                    avatar_src: "<?php echo $currentUser->avatar_src; ?>"
+                  });
                 });
                 
               </script>
@@ -355,11 +418,13 @@ $_render = function() {
                   <span class="kanalas__message-time"><?php echo $message->getTimeString(); ?></span>
                 </div>
 
-                <div class="kanalas__message-block
+                <div class="kanalas__message-block <?php 
+                if($messageUserBlocked) echo 'kanalas__message-block--blocked'; 
+              ?> 
               <?php 
                 if($message->sender == $currentUser->id) echo 'kanalas__message-block--yours'; 
               ?>">
-                <?php echo $message->text ?>
+                <?php echo $messageUserBlocked ? "Blocked." : $message->text ?>
               </div> 
               </div> 
             </div><?php

@@ -8,6 +8,8 @@ require "./includes/komunikacija/channel.php";
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 
+$GLOBALS['_channelController']->resetOnlineUsers();
+
 class Client {
     public ConnectionInterface $conn;
     public int $userId;
@@ -68,6 +70,7 @@ class Chat implements MessageComponentInterface {
         $this->clients->attach($client);
         
         echo "New connection! ({$conn->resourceId}, userId: {$userId}, channelId: {$channelId})\n";
+        $GLOBALS['_channelController']->setChannelOnlineUsers($channelId, $this->getChannelUserCount($channelId));
 
         foreach ($this->clients as $currentClient) {
             if ($conn !== $currentClient->conn && $currentClient->channelId == $channelId) {
@@ -100,7 +103,7 @@ class Chat implements MessageComponentInterface {
                 }
             }
 
-            $users = $GLOBALS['_userController']->getUsersByIds($userIds);
+            $users = $GLOBALS['_userController']->getUsersByIds($userIds, $args);
             $usersJson = json_encode($users);
             $client->conn->send("~~~get_users~~~{$usersJson}");
             echo "User {$client->userId} asked for online users for channel {$client->channelId}\n";
@@ -135,6 +138,7 @@ class Chat implements MessageComponentInterface {
             if ($conn == $client->conn) {
                 $this->clients->detach($client);
                 echo "Connection {$conn->resourceId} has disconnected\n";
+                $GLOBALS['_channelController']->setChannelOnlineUsers($client->channelId, $this->getChannelUserCount($client->channelId));
 
                 if($this->getCountOfSameUserInChannel($client->channelId, $client->userId) < 1) {
                     foreach ($this->clients as $currentClient) {
