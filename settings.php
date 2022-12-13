@@ -1,5 +1,5 @@
 <?php
-$_pagePrefix = '/imdb-copy';
+$_pagePrefix = '';
 $_mysqlHost = "localhost";
 $_mysqlUsername = 'root';
 $_mysqlPassword = '';

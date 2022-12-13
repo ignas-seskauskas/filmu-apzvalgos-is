@@ -1,8 +1,9 @@
 <?php
 $_title = "Komentarų pridėjimas";
 $_render = function() {
+	//sql pridet, kad detu i duomenu baze
 	?>
-		<form>
+		<form method="post">
 			<div class="form-group">
 				<label for="exampleFormControlInput1">Antraštė</label>
 				<input type="text" class="form-control" id="komentaru_redagavimas__antraste">
