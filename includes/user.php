@@ -28,7 +28,11 @@ class UserController
 {
   function getCurrentUser()
   {
-    return databaseFillObject("SELECT * FROM `user` WHERE `id` = 2", function () {
+    if(!isset($_SESSION['user']))
+      return null;
+      
+    $escapedId = databaseEscapeString($_SESSION['user']);
+    return databaseFillObject("SELECT * FROM `user` WHERE `id` = $escapedId", function () {
       return new User();
     });
   }
@@ -82,9 +86,12 @@ class UserController
   {
     $user = databaseEscapeObject($user);
 
-    return databaseFillObject("SELECT * FROM `user` WHERE email='{$user->email}' AND password='{$user->password}'", function () {
+    $selectedUser = databaseFillObject("SELECT * FROM `user` WHERE email='{$user->email}' AND password='{$user->password}'", function () {
       return new User();
     });
+
+    $_SESSION['user'] = $selectedUser->id;
+    return $selectedUser;
   }
 }
 

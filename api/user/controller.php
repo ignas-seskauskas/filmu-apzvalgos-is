@@ -18,7 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($isRegistered === true) {
           $userObj = $GLOBALS['_userController']->loginUser((object) $_POST['values']);
           if ($userObj !== null) {
-            session_start();
             $_SESSION['_user'] = $userObj;
             $result = array('success' => 'logged in');
           } else {

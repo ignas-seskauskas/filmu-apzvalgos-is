@@ -106,7 +106,6 @@ $_render = function() {
         });
       });
     </script>
-
     <button type="button" class="btn btn-success kanalu-sarasas__create-button" onclick="location.href = '<?php echo $GLOBALS['_pagePrefix'] . '/sukurti-kanala' ?>';">
       <i class="bi bi-plus-circle"></i>
       Pridėti naują kanalą

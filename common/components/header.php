@@ -8,7 +8,6 @@ array_push($GLOBALS['_styleRenderers'], function () {
   }
 <?php
 });
-session_start();
 function renderHeader()
 {
 ?>
