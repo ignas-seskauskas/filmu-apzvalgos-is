@@ -55,6 +55,9 @@ if (isset($_GET['page'])) {
     case 'api/channel/get':
       require('api/channel/get.php');
       break;
+    case 'api/user/controller':
+      require('api/user/controller.php');
+      break;
     default:
       require('pages/404.php');
       break;

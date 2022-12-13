@@ -2,7 +2,8 @@
 
 include('user_permissions.php');
 
-class User {
+class User
+{
   public $id;
   public $name;
   public $surname;
@@ -17,26 +18,49 @@ class User {
   public $channel;
   public $status;
 
-  function getPermissions() {
+  function getPermissions()
+  {
     return $GLOBALS['_permissions'][$this->type];
   }
 }
 
-class UserController {
-  function getCurrentUser() {
-    return databaseFillObject("SELECT * FROM `user` WHERE `id` = 2", function () {return new User();});
+class UserController
+{
+  function getCurrentUser()
+  {
+    return databaseFillObject("SELECT * FROM `user` WHERE `id` = 2", function () {
+      return new User();
+    });
   }
 
-  function getUsersByIds($ids) {
+  function getUsersByIds($ids)
+  {
     $idsImploded = implode(",", $ids);
-    return databaseFillObjects("SELECT * FROM `user` WHERE `id` IN ({$idsImploded})", function () {return new User();});
+    return databaseFillObjects("SELECT * FROM `user` WHERE `id` IN ({$idsImploded})", function () {
+      return new User();
+    });
   }
 
-  function getUserById($id) {
+  function getUserById($id)
+  {
     $escapedId = databaseEscapeString($id);
-    return databaseFillObject("SELECT * FROM `user` WHERE `id` = $escapedId", function () {return new User();});
+    return databaseFillObject("SELECT * FROM `user` WHERE `id` = $escapedId", function () {
+      return new User();
+    });
+  }
+
+  function registerNewUser($user)
+  {
+    $user = databaseEscapeObject($user);
+    $user->type = UserType::Default->value;
+    $user->ip = $_SERVER['REMOTE_ADDR'];
+    $user->register_time = date("Y-m-d H:i:s");
+    $user->last_visit_time = date("Y-m-d H:i:s");
+    $user->avatar_src = "";
+    databaseQuery("INSERT INTO `user` (`name`, `surname`, `email`, `password`, `username`, `type`, `register_time`, `ip`, `last_visit_time`, `avatar_src`)
+     VALUES ('{$user->name}', '{$user->surname}', '{$user->email}', '{$user->password}', '{$user->username}', '{$user->type}', '{$user->register_time}', '{$user->ip}', '{$user->last_visit_time}', '{$user->avatar_src}')");
+    return databaseInsertId();
   }
 }
 
 $_userController = new UserController();
-
