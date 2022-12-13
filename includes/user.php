@@ -2,6 +2,12 @@
 
 include('user_permissions.php');
 
+class ChannelBlocking
+{
+  public $user_blocker;
+  public $user_blocked;
+}
+
 class User
 {
   public $id;
@@ -21,6 +27,28 @@ class User
   function getPermissions()
   {
     return $GLOBALS['_permissions'][$this->type];
+  }
+
+  function isBlocked()
+  {
+    $currentUser = $GLOBALS['_userController']->getCurrentUser();
+    if(!isset($currentUser))
+      return false;
+    $blocking = databaseFillObject("SELECT * FROM `channel_blocking` WHERE `user_blocker` = {$currentUser->id} AND `user_blocked` = {$this->id}", function () {
+      return new ChannelBlocking();
+    });
+    return isset($blocking);
+  }
+
+  function toggleBlock() {
+    $currentUser = $GLOBALS['_userController']->getCurrentUser();
+    if(!isset($currentUser))
+      return;
+    if($this->isBlocked()) {
+      return databaseQuery("DELETE FROM `channel_blocking` WHERE `user_blocker` = {$currentUser->id} AND `user_blocked` = {$this->id}");
+    } else {
+      return databaseQuery("INSERT INTO `channel_blocking` (`user_blocker`,`user_blocked`) VALUES ({$currentUser->id}, {$this->id})");
+    }
   }
 }
 

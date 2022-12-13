@@ -55,6 +55,12 @@ if (isset($_GET['page'])) {
     case 'api/channel/get':
       require('api/channel/get.php');
       break;
+    case 'api/channel/get_blocked':
+      require('api/channel/get_blocked.php');
+      break;
+    case 'api/channel/toggle_block':
+      require('api/channel/toggle_block.php');
+      break;
     case 'api/user/controller':
       require('api/user/controller.php');
       break;
