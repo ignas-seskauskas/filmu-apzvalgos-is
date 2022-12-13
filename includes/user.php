@@ -89,7 +89,6 @@ class UserController
     $selectedUser = databaseFillObject("SELECT * FROM `user` WHERE email='{$user->email}' AND password='{$user->password}'", function () {
       return new User();
     });
-
     $_SESSION['user'] = $selectedUser->id;
     return $selectedUser;
   }

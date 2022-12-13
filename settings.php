@@ -1,7 +1,7 @@
 <?php
-$_pagePrefix = '/imdb-copy';
+$_pagePrefix = '';
 $_mysqlHost = "localhost";
 $_mysqlUsername = 'root';
 $_mysqlPassword = '';
-$_mysqlDatabase = 'imdb_copy';
+$_mysqlDatabase = 'imdb';
 $_websocketServerUrl = 'ws://localhost:8080';

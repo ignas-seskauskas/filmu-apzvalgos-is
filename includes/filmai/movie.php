@@ -11,25 +11,36 @@ class Movie {
 
   private static $last_id = 0;
 
-  public static function generalMovieInfo($movieName, $movieYear, $movieDirector, $movieWriter) {
+  public static function generalMovieInfo($movieName, $movieYear, $movieDirector, $movieWriter, $id) {
     $instance = new self();
     $instance->movieName = $movieName;
     $instance->movieYear = $movieYear;
     $instance->movieDirector = $movieDirector;
     $instance->movieWriter = $movieWriter;
-    $instance->id = $instance::$last_id++;
+    $instance->id = $id;
     return $instance;
  }
 }
 class MovieController {
-  function getMovies($page = 0) {
-    $movies = [Movie::generalMovieInfo("Van Hellsing", 2004, "Stephen Sommers", "Stephen Sommers"),
-		Movie::generalMovieInfo("Perfect Blue", 1997, "Satoshi Kon", "Sadayuki Murai")]; 
+  function getMovies() {
+    $dbc = mysqli_connect($GLOBALS['_mysqlHost'], $GLOBALS['_mysqlUsername'], $GLOBALS['_mysqlPassword'], $GLOBALS['_mysqlDatabase']);
+    $sql = "SELECT * FROM `filmas`";
+    $result = mysqli_query($dbc, $sql);
+    $movies = [];
+    while($row = mysqli_fetch_assoc($result)){
+      array_push($movies, Movie::generalMovieInfo($row['pavadinimas'], $row['metai'], $row['rezisierius'], $row['rasytojas'], $row['id']));
+    }
     return $movies;
   }
 
   function getMovieById($id) {
-    return $this->getMovies()[$id];
+    $dbc = mysqli_connect($GLOBALS['_mysqlHost'], $GLOBALS['_mysqlUsername'], $GLOBALS['_mysqlPassword'], $GLOBALS['_mysqlDatabase']);
+    $sql = "SELECT * FROM `filmas` WHERE `id`=$id";
+    $result = mysqli_query($dbc, $sql);
+    $movies = [];
+    while($row = mysqli_fetch_assoc($result)){
+      return Movie::generalMovieInfo($row['pavadinimas'], $row['metai'], $row['rezisierius'], $row['rasytojas'], $row['id']);
+    }
   }
 }
 

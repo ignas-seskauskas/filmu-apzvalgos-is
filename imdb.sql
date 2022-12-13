@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 13, 2022 at 09:34 PM
+-- Generation Time: Dec 14, 2022 at 12:43 AM
 -- Server version: 10.4.25-MariaDB
 -- PHP Version: 8.1.10
 
@@ -131,8 +131,18 @@ CREATE TABLE `filmas` (
   `siuzetas` varchar(255) NOT NULL,
   `rasytojas` varchar(255) NOT NULL,
   `ivertinimas` int(11) NOT NULL,
-  `id_Filmas` int(11) NOT NULL
+  `id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `filmas`
+--
+
+INSERT INTO `filmas` (`pavadinimas`, `metai`, `rezisierius`, `trukme`, `siuzetas`, `rasytojas`, `ivertinimas`, `id`) VALUES
+('Van Helsing', 2004, 'Stephen Sommers', 191, 'The famed monster hunter is sent to Transylvania to stop Count Dracula, who is using Dr. Frankenstein\'s research and a werewolf for nefarious purposes.', 'Stephen Sommers', 6, 1),
+('Perfect Blue', 1997, 'Satoshi Kon', 120, 'Test', 'Sadayuki Murai', 6, 2),
+('TTest', 2004, 'testt', 200, 'testt', 'test', 2, 3),
+('tetstet', 2222, 'testtsets', 232, 'testtsett', 'testsetset', 3, 4);
 
 -- --------------------------------------------------------
 
@@ -182,13 +192,23 @@ CREATE TABLE `ip_blacklist` (
 CREATE TABLE `komentaras` (
   `vartotojo_vardas` varchar(255) DEFAULT NULL,
   `tekstas` varchar(255) NOT NULL,
-  `data` date NOT NULL,
+  `data` datetime NOT NULL,
   `reitingas` int(11) NOT NULL,
   `antraste` varchar(255) NOT NULL,
   `id` int(11) NOT NULL,
   `fk_Filmas` int(11) NOT NULL,
   `fk_user` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `komentaras`
+--
+
+INSERT INTO `komentaras` (`vartotojo_vardas`, `tekstas`, `data`, `reitingas`, `antraste`, `id`, `fk_Filmas`, `fk_user`) VALUES
+('', 'testt', '2022-12-13 23:30:52', 2, '2', 1, 3, 4),
+(NULL, 'test', '2022-12-13 23:47:51', 10, 'test', 3, 2, 4),
+(NULL, 'test', '2022-12-14 00:35:52', 2, 'ttest', 4, 1, 4),
+(NULL, 'ttetst', '2022-12-14 00:36:06', 6, 'testt', 5, 4, 4);
 
 -- --------------------------------------------------------
 
@@ -241,7 +261,8 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `name`, `surname`, `email`, `password`, `username`, `type`, `register_time`, `ip`, `last_visit_time`, `avatar_src`, `channel`) VALUES
-(3, 'Admin', 'Admin', 'admin@admin.com', 'cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e', 'admin', 'Moderator', '2022-12-13 21:02:40', '111.111.111.111', '2022-12-13 21:02:40', 'https://i.gifer.com/origin/f8/f8903ad1904347df9561656bcfa8918e.gif', NULL);
+(3, 'Admin', 'Admin', 'admin@admin.com', 'cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e', 'admin', 'Moderator', '2022-12-13 21:02:40', '111.111.111.111', '2022-12-13 21:02:40', 'https://i.gifer.com/origin/f8/f8903ad1904347df9561656bcfa8918e.gif', NULL),
+(4, 'simbab', 'baba', 'babarskas.simonas@gmail.com', 'simbab', 'simbab', 'Moderator', '2022-12-13 21:57:33', '111.111.111.112', '2022-12-13 21:57:33', 'https://images.unsplash.com/photo-1471879832106-c7ab9e0cee23?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8&w=1000&q=80', NULL);
 
 -- --------------------------------------------------------
 
@@ -302,7 +323,7 @@ ALTER TABLE `dizaino_tema`
 -- Indexes for table `filmas`
 --
 ALTER TABLE `filmas`
-  ADD PRIMARY KEY (`id_Filmas`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `filmo_zanras`
@@ -376,10 +397,22 @@ ALTER TABLE `channel_message`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `filmas`
+--
+ALTER TABLE `filmas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `komentaras`
+--
+ALTER TABLE `komentaras`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables
@@ -409,13 +442,13 @@ ALTER TABLE `channel_message`
 -- Constraints for table `filmo_zanras`
 --
 ALTER TABLE `filmo_zanras`
-  ADD CONSTRAINT `yra` FOREIGN KEY (`fk_Filmasid_Filmas`) REFERENCES `filmas` (`id_Filmas`);
+  ADD CONSTRAINT `yra` FOREIGN KEY (`fk_Filmasid_Filmas`) REFERENCES `filmas` (`id`);
 
 --
 -- Constraints for table `filmu_sarasas`
 --
 ALTER TABLE `filmu_sarasas`
-  ADD CONSTRAINT `priskiriamas` FOREIGN KEY (`fk_Filmasid_Filmas`) REFERENCES `filmas` (`id_Filmas`),
+  ADD CONSTRAINT `priskiriamas` FOREIGN KEY (`fk_Filmasid_Filmas`) REFERENCES `filmas` (`id`),
   ADD CONSTRAINT `turi_filma` FOREIGN KEY (`fk_userid`) REFERENCES `user` (`id`);
 
 --
@@ -423,7 +456,7 @@ ALTER TABLE `filmu_sarasas`
 --
 ALTER TABLE `komentaras`
   ADD CONSTRAINT `raso` FOREIGN KEY (`fk_user`) REFERENCES `user` (`id`),
-  ADD CONSTRAINT `turi_komentara` FOREIGN KEY (`fk_Filmas`) REFERENCES `filmas` (`id_Filmas`);
+  ADD CONSTRAINT `turi_komentara` FOREIGN KEY (`fk_Filmas`) REFERENCES `filmas` (`id`);
 
 --
 -- Constraints for table `komentaro_ivertinimas`

@@ -16,7 +16,7 @@ array_push($GLOBALS['_styleRenderers'], function() {
 $_title = "Filmų sąrašas";
 $_render = function() {
   $movies = $GLOBALS['_movieController']->getMovies();
-
+  $prefix = $GLOBALS['_pagePrefix'];
   ?>
     <button type="button" class="btn btn-success filmu-sarasas__create-button" onclick="location.href = '<?php echo $GLOBALS['_pagePrefix'] . '/filmu-pridejimas' ?>';">
       <i class="bi bi-plus-circle"></i>
@@ -38,11 +38,11 @@ $_render = function() {
         <?php
           foreach ($movies as &$movie) {
             echo '<tr>';
-            echo '<td><a href="'. $GLOBALS['_pagePrefix'] .'/filmas&id=' . $movie->id . '">' . $movie->movieName . '</a></td>';
-			echo '<td><a href="'. $GLOBALS['_pagePrefix'] .'/filmas&id=' . $movie->id . '">' . $movie->movieYear . '</a></td>';
-			echo '<td><a href="'. $GLOBALS['_pagePrefix'] .'/filmas&id=' . $movie->id . '">' . $movie->movieDirector . '</a></td>';
-			echo '<td><a href="'. $GLOBALS['_pagePrefix'] .'/filmas&id=' . $movie->id . '">' . $movie->movieWriter . '</a></td>';
-
+            echo '<td><a href="'. $prefix .'/filmas&id=' . $movie->id . '">' . $movie->movieName . '</a></td>';
+			      echo '<td><a href="'. $prefix .'/filmas&id=' . $movie->id . '">' . $movie->movieYear . '</a></td>';
+			      echo '<td><a href="'. $prefix .'/filmas&id=' . $movie->id . '">' . $movie->movieDirector . '</a></td>';
+			      echo '<td><a href="'. $prefix .'/filmas&id=' . $movie->id . '">' . $movie->movieWriter . '</a></td>';
+            echo '</tr>';
             }
           }
         ?>

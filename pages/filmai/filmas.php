@@ -13,16 +13,19 @@ array_push($GLOBALS['_styleRenderers'], function () {
 });
 
 $movie = $GLOBALS['_movieController']->getMovieById($_GET['id']);
-$comments = $GLOBALS['_commentController']->getComments();
+$comments = $GLOBALS['_commentController']->getCommentsByMovieID($_GET['id']);
 $_title = "Filmas - " . $movie->movieName;
 
 if (!isset($movie) || !isset($_GET['id'])) {
   header("Location: " . $GLOBALS['_pagePrefix'] . "/404");
 }
 
+$currentUser = $GLOBALS['_userController']->getCurrentUser();
+
 $_render = function () {
   global $movie;
   global $comments;
+  global $currentUser;
 ?>
   <div class="filmas__sidebar">
     Filmo pavadinimas: <strong><?php echo $movie->movieName; ?></strong>
@@ -30,10 +33,16 @@ $_render = function () {
     Režisierius: <strong><?php echo $movie->movieDirector; ?></strong>
     <br>
     <br>
-    <button type="button" class="btn btn-success" style='width: 20%' onclick="location.href = '<?php echo $GLOBALS['_pagePrefix'] . '/komentaru-pridejimas' ?>';">
+    <?php
+    if($currentUser != null){
+    ?>
+    <button type="button" class="btn btn-success" style='width: 20%' onclick="location.href = '<?php echo $GLOBALS['_pagePrefix'] . '/komentaru-pridejimas' . '&moveid=' .  $_GET['id']?>';">
       <i class="bi bi-plus-circle"></i>
       Pridėti naują komentarą
     </button>
+    <?php
+    }
+    ?>
     <table class="table table-dark table-striped">
       <tr>
         <th style='text-align: center' colspan='6'>Komentarai</th>
@@ -45,18 +54,21 @@ $_render = function () {
         echo "<td>Komentaro sukūrimo data: <b>" . $comment->date . "</b></td>";
         echo "<td>Reitingas: <b>" . $comment->rating . "</b></td>";
         echo "<td>Komentaras: <b>" . $comment->text . "</b></td>";
-        echo "<td>"; ?><button type="button" class="btn btn-warning" onclick="location.href = '<?php echo $GLOBALS['_pagePrefix'] . '/komentaru-redagavimas' . '&id=' . $comment->id . '&movieid=' . $movie->id ?> .';">
+        echo "<td>";
+        if($currentUser != null && ($currentUser->type == "Moderator" || $comment->fk_user == $currentUser->id)){
+          ?><button type="button" class="btn btn-warning" onclick="location.href = '<?php echo $GLOBALS['_pagePrefix'] . '/komentaru-redagavimas' . '&id=' . $comment->id . '&movieid=' . $movie->id ?> .';">
           <i class="bi bi-pencil-fill"></i>
           Redaguoti komentarą
         </button></td>
         <td>
-          <button type="button" class="btn btn-danger">
+          <button type="button" class="btn btn-danger" onclick="location.href = '<?php echo $GLOBALS['_pagePrefix'] . '/komentaro-salinimas' . '&id=' . $comment->id . '&movieid=' . $movie->id ?> .';">
             <i class="bi bi-x-circle"></i>
             Šalinti komentarą
           </button>
         </td>
         </tr><?php
             }
+          }
               ?>
     </table>
     <br>

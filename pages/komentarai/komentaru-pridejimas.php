@@ -1,11 +1,17 @@
 <?php
 $_title = "Komentarų pridėjimas";
+$currentUser = $GLOBALS['_userController']->getCurrentUser();
 if (isset($_POST["addComment"])) {
+	$moveID = $_GET["moveid"];
+	$tekstas = $_POST["komentaru_pridejimas_komentaras"];
+	$data = date("Y-m-d H:i:s");
+	$reitingas = $_POST["komentaru_pridejimas_reitingas"];
+	$antraste = $_POST["komentaru_pridejimas_antraste"];
+
 	$dbc = mysqli_connect($GLOBALS['_mysqlHost'], $GLOBALS['_mysqlUsername'], $GLOBALS['_mysqlPassword'], $GLOBALS['_mysqlDatabase']);
-	$sql = "INSERT INTO `komentaras` (`tekstas`, `data`, `reitingas`, `antraste` `fk_filmoID`, `fk_komentaroIvertinimoID`) 
-                          VALUES ('tekstas', 'data', 'reitingas', 'antraste', 'fk1', 'fk2')";
-	echo $dbc;
-	//$result = mysqli_query($dbc, $sql);
+	$sql = "INSERT INTO `komentaras`(`vartotojo_vardas`, `tekstas`, `data`, `reitingas`, `antraste`, `id`, `fk_Filmas`, `fk_user`) 
+							 VALUES (NULL,'$tekstas', '$data', '$reitingas', '$antraste', '', $moveID, $currentUser->id)";
+	$result = mysqli_query($dbc, $sql);
 }
 $_render = function () {
 	//sql pridett, kad detu i duomenu baze	
@@ -28,6 +34,11 @@ $_render = function () {
 			<button type="submit" class="btn btn-success" name='addComment'>
 				Pridėti filmą
 			</button>
+			<?php
+			if (isset($_POST["addComment"])) {
+				echo "<div style='color: red;'>Sėkmingai pridėjote komentarą!</div>";
+			}
+			?>
 		</center>
 	</form>
 <?php
