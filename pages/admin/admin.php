@@ -12,27 +12,27 @@ $_render = function() {
     $ip_blacklist = databaseQuery("SELECT * FROM IP_blacklist");
     $ip_blacklist = mysqli_fetch_all($ip_blacklist, MYSQLI_ASSOC);
 
-    $users = databaseQuery("SELECT * FROM vartotojas");
+    $users = databaseQuery("SELECT * FROM user");
 
     // Statistics
-    $most_recent_reg_users = databaseQuery("SELECT * FROM vartotojas ORDER BY uzsiregistravimo_data DESC");
+    $most_recent_reg_users = databaseQuery("SELECT * FROM user ORDER BY register_time DESC");
     $most_recent_reg_users = mysqli_fetch_all($most_recent_reg_users, MYSQLI_ASSOC);
 
     $most_recent_reg_users_top = [];
 
     for ($i = 0; $i < count($most_recent_reg_users) && $i < 3; $i++) {
-        $most_recent_reg_users_top[]['name'] = $most_recent_reg_users[$i]['slapyvardis'];
-        $most_recent_reg_users_top[count($most_recent_reg_users_top) - 1]['time'] =  $most_recent_reg_users[$i]['uzsiregistravimo_data'];
+        $most_recent_reg_users_top[]['name'] = $most_recent_reg_users[$i]['username'];
+        $most_recent_reg_users_top[count($most_recent_reg_users_top) - 1]['time'] =  $most_recent_reg_users[$i]['register_time'];
     }
 
-    $most_recent_active_users = databaseQuery("SELECT * FROM vartotojas ORDER BY paskutinio_apsilankymo_laikas DESC");
+    $most_recent_active_users = databaseQuery("SELECT * FROM user ORDER BY last_visit_time DESC");
     $most_recent_active_users = mysqli_fetch_all($most_recent_active_users, MYSQLI_ASSOC);
 
     $most_recent_active_users_top = [];
 
     for ($i = 0; $i < count($most_recent_active_users) && $i < 3; $i++) {
-        $most_recent_active_users_top[]['name'] = $most_recent_active_users[$i]['slapyvardis'];
-        $most_recent_active_users_top[count($most_recent_active_users_top) - 1]['time'] =  $most_recent_active_users[$i]['paskutinio_apsilankymo_laikas'];
+        $most_recent_active_users_top[]['name'] = $most_recent_active_users[$i]['username'];
+        $most_recent_active_users_top[count($most_recent_active_users_top) - 1]['time'] =  $most_recent_active_users[$i]['last_visit_time'];
     }
 
     // var_dump($most_recent_reg_users_top);
@@ -160,11 +160,11 @@ $_render = function() {
                     <?php
                     foreach($users as $user) {
                         echo "<div>";
-                        echo "<p>" . $user['slapyvardis'] . "</p>";
-                        echo "<p>" . $user['vardas'] . "</p>";
-                        echo "<p>" . $user['pavarde'] . "</p>";
-                        echo "<p>" . $user['epastas'] . "</p>";
-                        echo '<input class="admin-mail-checkbox" type="checkbox" data-mail="' . $user['epastas'] . '"/>';
+                        echo "<p>" . $user['username'] . "</p>";
+                        echo "<p>" . $user['name'] . "</p>";
+                        echo "<p>" . $user['surname'] . "</p>";
+                        echo "<p>" . $user['email'] . "</p>";
+                        echo '<input class="admin-mail-checkbox" type="checkbox" data-mail="' . $user['email'] . '"/>';
                         echo "</div>";
                     }
                     ?>

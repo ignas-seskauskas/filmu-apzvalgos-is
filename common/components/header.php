@@ -43,6 +43,18 @@ function renderHeader()
         </li>
       <?php
       }
+
+      if (isset($_SERVER['REMOTE_ADDR']) && $_SERVER['REMOTE_ADDR'] === "127.0.0.1") {
+        ?>
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="<?php echo $GLOBALS['_pagePrefix']; ?>/admin">Admin</a>
+        </li>
+      <?php
+      } else {
+      ?>
+      <?php
+      }
+
       ?>
     </ul>
   </nav>
