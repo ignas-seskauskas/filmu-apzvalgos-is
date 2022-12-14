@@ -9,13 +9,25 @@ function renderStyles() {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    background-color: <?php echo $GLOBALS['_color_dark'] ?>;
+    background-color: <?php echo $GLOBALS['_fono_spalva'] ?>;
     color: <?php echo $GLOBALS['_color_light'] ?>;
     <?php 
       if(isset($GLOBALS['_style_max-height'])) {
         echo 'max-height: 100vh;';
       }
     ?>
+  }
+
+  * {
+    /* background-color: <?php echo $GLOBALS['_fono_spalva'] ?> !important */
+  }
+
+  a {
+    max-width: 100%;
+  }
+
+  .banner {
+    height: 200px;
   }
 
   .content {

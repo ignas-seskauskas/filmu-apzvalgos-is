@@ -2,12 +2,15 @@
 session_start();
 
 require('settings.php');
-require('styles.php');
 require('includes.php');
+require('styles.php');
+// require('includes.php');
 require('routes.php');
 require('components.php');
+require('setup.php');
 
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -25,7 +28,9 @@ require('components.php');
   <body>
     <?php 
       renderHeader();
+      echo '<img src="' . $_banner . "?" . time() . '" alt="banner" class="banner">';
       echo '<div class="content">';
+      
       $_render();
       echo '</div>';
       renderFooter();
