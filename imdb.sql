@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 14, 2022 at 12:43 AM
+-- Generation Time: Dec 14, 2022 at 02:22 AM
 -- Server version: 10.4.25-MariaDB
 -- PHP Version: 8.1.10
 
@@ -205,10 +205,10 @@ CREATE TABLE `komentaras` (
 --
 
 INSERT INTO `komentaras` (`vartotojo_vardas`, `tekstas`, `data`, `reitingas`, `antraste`, `id`, `fk_Filmas`, `fk_user`) VALUES
-('', 'testt', '2022-12-13 23:30:52', 2, '2', 1, 3, 4),
-(NULL, 'test', '2022-12-13 23:47:51', 10, 'test', 3, 2, 4),
-(NULL, 'test', '2022-12-14 00:35:52', 2, 'ttest', 4, 1, 4),
-(NULL, 'ttetst', '2022-12-14 00:36:06', 6, 'testt', 5, 4, 4);
+('simbab', 'testt', '2022-12-13 23:30:52', 2, '2', 1, 3, 4),
+('simbab', 'test', '2022-12-13 23:47:51', 10, 'test', 3, 2, 4),
+('simbab', 'test', '2022-12-14 00:35:52', 2, 'ttest', 4, 1, 4),
+('simbab', 'ttetst', '2022-12-14 00:36:06', 6, 'testt', 5, 4, 4);
 
 -- --------------------------------------------------------
 
@@ -222,6 +222,16 @@ CREATE TABLE `komentaro_ivertinimas` (
   `fk_Komentaras` int(11) NOT NULL,
   `fk_user` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `komentaro_ivertinimas`
+--
+
+INSERT INTO `komentaro_ivertinimas` (`patiko`, `id`, `fk_Komentaras`, `fk_user`) VALUES
+(1, 1, 1, 4),
+(1, 3, 3, 4),
+(0, 4, 4, 4),
+(0, 5, 5, 4);
 
 -- --------------------------------------------------------
 
@@ -409,6 +419,12 @@ ALTER TABLE `komentaras`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
+-- AUTO_INCREMENT for table `komentaro_ivertinimas`
+--
+ALTER TABLE `komentaro_ivertinimas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
@@ -480,11 +496,3 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
-INSERT INTO `user` (`name`, `surname`, `email`, `password`, `username`, `type`, `register_time`, `ip`, `last_visit_time`, `avatar_src`, `channel`) VALUES ('User', 'User', 'user@u.c', 'asd', 'User', 'Critic', '2022-12-13 21:32:57', '1.1.1.1', '2022-12-13 21:32:57', 'https://mir-s3-cdn-cf.behance.net/project_modules/disp/122807112736829.601a1ab649d2b.gif', NULL);
-
-ALTER TABLE `channel` ADD `online_users` INT NOT NULL AFTER `creator`;
-
-ALTER TABLE `channel_blocking` DROP `start_time`;
-
-ALTER TABLE `channel_blocking` DROP `length_min`;
