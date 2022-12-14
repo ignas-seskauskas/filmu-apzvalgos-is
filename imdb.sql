@@ -179,7 +179,8 @@ CREATE TABLE `filmu_sarasas` (
 
 CREATE TABLE `ip_blacklist` (
   `IP_adresas` varchar(255) NOT NULL,
-  `uzblokavimo_laikas` datetime NOT NULL,
+  `komentaras` varchar(255),
+  `nuo` datetime NOT NULL,
   `id_IP_blacklist` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
