@@ -100,6 +100,8 @@ CREATE TABLE user
   `ip` varchar(15) NOT NULL,
   `last_visit_time` datetime NOT NULL,
   `avatar_src` varchar(300) NOT NULL,
+  `avatar_height` int(5) NOT NULL,
+  `avatar_width` int(5) NOT NULL,
   `channel` int(11) DEFAULT NULL
 );
 ALTER TABLE `user`
@@ -211,14 +213,14 @@ ALTER TABLE `channel_message`
 ALTER TABLE `user`
   ADD CONSTRAINT `FK_USER_CHANNEL` FOREIGN KEY (`channel`) REFERENCES `channel` (`id`);
 
-INSERT INTO `user` (`id`, `name`, `surname`, `email`, `password`, `username`, `type`, `register_time`, `ip`, `last_visit_time`, `avatar_src`, `channel`) VALUES
-(3, 'Admin', 'Admin', 'admin@admin.com', 'cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e', 'admin', 'Moderator', '2022-12-13 21:02:40', '111.111.111.111', '2022-12-13 21:02:40', 'https://i.gifer.com/origin/f8/f8903ad1904347df9561656bcfa8918e.gif', NULL);
+INSERT INTO `user` (`id`, `name`, `surname`, `email`, `password`, `username`, `type`, `register_time`, `ip`, `last_visit_time`, `avatar_src`, `avatar_height`, `avatar_width`, `channel`) VALUES
+(3, 'Admin', 'Admin', 'admin@admin.com', 'cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e', 'admin', 'Moderator', '2022-12-13 21:02:40', '111.111.111.111', '2022-12-13 21:02:40', 'https://i.gifer.com/origin/f8/f8903ad1904347df9561656bcfa8918e.gif', 0, 0, NULL);
 
 INSERT INTO `channel` (`id`, `name`, `description`, `max_users`, `create_time`, `last_active_time`, `creator`) VALUES
 (4, 'Test', 'Test', 3, '2022-12-13 22:14:54', '2022-12-13 22:14:54', 3),
 (5, 'Test2', 'asd', 5, '2022-12-13 22:21:26', '2022-12-13 22:21:26', 3);
 
-INSERT INTO `user` (`name`, `surname`, `email`, `password`, `username`, `type`, `register_time`, `ip`, `last_visit_time`, `avatar_src`, `channel`) VALUES ('User', 'User', 'user@u.c', 'asd', 'User', 'Critic', '2022-12-13 21:32:57', '1.1.1.1', '2022-12-13 21:32:57', 'https://mir-s3-cdn-cf.behance.net/project_modules/disp/122807112736829.601a1ab649d2b.gif', NULL);
+INSERT INTO `user` (`name`, `surname`, `email`, `password`, `username`, `type`, `register_time`, `ip`, `last_visit_time`, `avatar_src`, `avatar_height`, `avatar_width`, `channel`) VALUES ('User', 'User', 'user@u.c', 'asd', 'User', 'Critic', '2022-12-13 21:32:57', '1.1.1.1', '2022-12-13 21:32:57', 'https://mir-s3-cdn-cf.behance.net/project_modules/disp/122807112736829.601a1ab649d2b.gif', 0, 0, NULL);
 
 ALTER TABLE `channel` ADD `online_users` INT NOT NULL AFTER `creator`;
 

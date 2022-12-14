@@ -18,14 +18,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($isRegistered === true) {
           $userObj = $GLOBALS['_userController']->loginUser((object) $_POST['values']);
           if ($userObj !== null) {
-            $_SESSION['_user'] = $userObj;
+            // $_SESSION['_user'] = $userObj;
             $result = array('success' => 'logged in');
           } else {
-            $result = array('error' => 'password not correct');
+            $result = array('error' => 'password not correct', 'val' => $userObj);
           }
         } else {
           $result = array('error' => 'user is not registered');
         }
+        break;
+      case 'logout':
+        $GLOBALS['_userController']->logoutUser();
+        $result = array('success' => 'test');
+        break;
+      case 'updateProfile':
+        $isProfileUpdated = $GLOBALS['_userController']->updateUserProfile((object) $_POST['values']);
+        if ($isProfileUpdated === true) {
+          $result = array('success' => 'profile updated successfully');
+        } else {
+          $result = array('error' => 'profile update was unsuccessful');
+        }
+        break;
+      case 'deleteProfile':
+        $GLOBALS['_userController']->deleteUserProfile();
+        $result = array('error' => 'profile deleted');
         break;
       default:
         $result = array('error' => 'Action not implemented');
@@ -37,6 +53,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   header("Content-Type: application/json; charset=UTF-8");
   header("Access-Control-Allow-Origin: *");
   die();
-} else {
+}
+// else if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+//   if (isset($_POST['action'])) {
+//     switch ($_POST['action']) {
+//       case 'updateProfile':
+//         break;
+//         default:
+//     }
+//   }
+//   echo json_encode($result);
+//   header("Content-Type: application/json; charset=UTF-8");
+//   header("Access-Control-Allow-Origin: *");
+//   die();
+// } 
+else {
   $result = array('error' => 'Bad request method');
 }

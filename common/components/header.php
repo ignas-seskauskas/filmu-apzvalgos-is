@@ -21,7 +21,7 @@ function renderHeader()
         <a class="nav-link" aria-current="page" href="<?php echo $GLOBALS['_pagePrefix']; ?>/">Filmų sąrašas</a>
       </li>
       <?php
-      if (isset($_SESSION['_user']) && !empty($_SESSION['_user'])) {
+      if (isset($_SESSION['user']) && !empty($_SESSION['user'])) {
       ?>
         <li class="nav-item">
           <a class="nav-link" aria-current="page" href="<?php echo $GLOBALS['_pagePrefix']; ?>/perziuretu-filmu-sarasas">Peržiūrėtų filmų sąrašas</a>

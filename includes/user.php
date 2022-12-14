@@ -21,6 +21,8 @@ class User
   public $ip;
   public $last_visit_time;
   public $avatar_src;
+  public $avatar_height;
+  public $avatar_width;
   public $channel;
   public $status;
 
@@ -32,7 +34,7 @@ class User
   function isBlocked()
   {
     $currentUser = $GLOBALS['_userController']->getCurrentUser();
-    if(!isset($currentUser))
+    if (!isset($currentUser))
       return false;
     $blocking = databaseFillObject("SELECT * FROM `channel_blocking` WHERE `user_blocker` = {$currentUser->id} AND `user_blocked` = {$this->id}", function () {
       return new ChannelBlocking();
@@ -40,11 +42,12 @@ class User
     return isset($blocking);
   }
 
-  function toggleBlock() {
+  function toggleBlock()
+  {
     $currentUser = $GLOBALS['_userController']->getCurrentUser();
-    if(!isset($currentUser))
+    if (!isset($currentUser))
       return;
-    if($this->isBlocked()) {
+    if ($this->isBlocked()) {
       return databaseQuery("DELETE FROM `channel_blocking` WHERE `user_blocker` = {$currentUser->id} AND `user_blocked` = {$this->id}");
     } else {
       return databaseQuery("INSERT INTO `channel_blocking` (`user_blocker`,`user_blocked`) VALUES ({$currentUser->id}, {$this->id})");
@@ -56,7 +59,7 @@ class UserController
 {
   function getCurrentUser()
   {
-    if(!isset($_SESSION['user']))
+    if (!isset($_SESSION['user']))
       return null;
 
     $escapedId = databaseEscapeString($_SESSION['user']);
@@ -68,7 +71,7 @@ class UserController
   function getUsersByIds($ids, $filter)
   {
     $idsImploded = implode(",", $ids);
-    if(isset($filter) && $filter != "") {
+    if (isset($filter) && $filter != "") {
       $escapedFilter = databaseEscapeString($filter);
       return databaseFillObjects("SELECT * FROM `user` WHERE `id` IN ({$idsImploded}) AND `name` LIKE '%$filter%'", function () {
         return new User();
@@ -78,7 +81,6 @@ class UserController
         return new User();
       });
     }
-    
   }
 
   function getUserById($id)
@@ -125,8 +127,49 @@ class UserController
     $selectedUser = databaseFillObject("SELECT * FROM `user` WHERE email='{$user->email}' AND password='{$user->password}'", function () {
       return new User();
     });
-    $_SESSION['user'] = $selectedUser->id;
-    return $selectedUser;
+    if ($selectedUser !== null) {
+      $_SESSION['user'] = $selectedUser->id;
+      return $selectedUser;
+    }
+    return null;
+  }
+
+  function updateUserProfile($user)
+  {
+    $user = databaseEscapeObject($user);
+
+    // session_start();
+    $id = $_SESSION['user'];
+
+    databaseQuery("UPDATE `user` SET name='{$user->name}', surname='{$user->surname}', username='{$user->username}', avatar_src='{$user->avatar_src}', avatar_height='{$user->avatar_height}', avatar_width='{$user->avatar_width}'
+    WHERE id='{$id}'");
+
+    $num_of_rows = databaseRowsAffected();
+
+    if ($num_of_rows > 0) {
+      // $_SESSION['_user']->name = $user->name;
+      // $_SESSION['_user']->surname = $user->surname;
+      // $_SESSION['_user']->username = $user->username;
+      // $_SESSION['_user']->avatar_src = $user->avatar_src;
+      // $_SESSION['_user']->avatar_height = $user->avatar_height;
+      // $_SESSION['_user']->avatar_width = $user->avatar_width;
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  function deleteUserProfile()
+  {
+    $id = $_SESSION['user'];
+    databaseQuery("DELETE FROM `user` WHERE id='{$id}'");
+  }
+
+  function logoutUser()
+  {
+    $id = $_SESSION['user'];
+    $currentTime = date("Y-m-d H:i:s");
+    databaseQuery("UPDATE `user` SET last_visit_time='{$currentTime}' WHERE id='{$id}'");
   }
 }
 
