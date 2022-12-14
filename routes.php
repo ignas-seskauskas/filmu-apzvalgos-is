@@ -67,6 +67,12 @@ if (isset($_GET['page'])) {
     case 'komentaro-salinimas':
       require('pages/komentarai/salinti.php');
       break;
+    case 'like-pridejimas':
+      require('pages/komentarai/like-komentaras.php');
+      break;
+    case 'dislike-pridejimas':
+      require('pages/komentarai/dislike-komentaras.php');
+      break;
     default:
       require('pages/404.php');
       break;

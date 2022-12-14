@@ -8,8 +8,9 @@ class Comment
     public $header;
     public $fk_movie;
     public $fk_user;
+    public $userName;
 
-    public static function Comment($text, $date, $rating, $header, $id, $fk_movie, $fk_user)
+    public static function Comment($text, $date, $rating, $header, $id, $fk_movie, $fk_user, $userName)
     {
         $instance = new self();
         $instance->id = $id;
@@ -19,6 +20,7 @@ class Comment
         $instance->header = $header;
         $instance->fk_movie = $fk_movie;
         $instance->fk_user = $fk_user;
+        $instance->userName = $userName;
         return $instance;
     }
 }
@@ -27,7 +29,7 @@ class CommentController
 {
     function getComments()
     {
-        return array(Comment::Comment("Random comment text.", date("Y-m-d H:i:s"), 7, "Comment header.", 0, 1, 4));
+
     }
     function getCommentsByMovieID($id)
     {
@@ -36,7 +38,7 @@ class CommentController
         $result = mysqli_query($dbc, $sql);
         $comments = [];
         while ($row = mysqli_fetch_assoc($result)) {
-            array_push($comments, Comment::Comment($row['tekstas'], $row['data'], $row['reitingas'], $row['antraste'], $row['id'], $row['fk_Filmas'], $row['fk_user']));
+            array_push($comments, Comment::Comment($row['tekstas'], $row['data'], $row['reitingas'], $row['antraste'], $row['id'], $row['fk_Filmas'], $row['fk_user'], $row['vartotojo_vardas']));
         }
         return $comments;
     }
@@ -46,7 +48,7 @@ class CommentController
         $result = mysqli_query($dbc, $sql);
 
         while ($row = mysqli_fetch_assoc($result)) {
-            return Comment::Comment($row['tekstas'], $row['data'], $row['reitingas'], $row['antraste'], $row['id'], $row['fk_Filmas'], $row['fk_user']);
+            return Comment::Comment($row['tekstas'], $row['data'], $row['reitingas'], $row['antraste'], $row['id'], $row['fk_Filmas'], $row['fk_user'], $row['vartotojo_vardas']);
         }
     }
 }
